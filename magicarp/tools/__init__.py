@@ -14,11 +14,12 @@ import pytz
 from simple_settings import settings
 from dateutil import parser as date_parser
 
-from api.tools import response  # NOQA
-from api.tools.endpoint import BaseEndpoint, EndpointContainer  # NOQA
-
 from . import (  # NOQA
-    misc, api_request, validators, endpoint, fields, response)
+    misc, api_request, validators, response, endpoint)
+
+# pylint: disable=wrong-import-order
+from magicarp.tools.endpoint import BaseEndpoint, EndpointContainer  # NOQA
+# pylint: enable=wrong-import-order
 
 # modules that are almost ready:
 # logging

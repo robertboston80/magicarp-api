@@ -6,7 +6,7 @@ from validators import (  # NOQA
     truthy, url, uuid, ValidationFailure)
 # pylint: enable=unused-import
 
-from api import exceptions, tools
+from magicarp import exceptions, tools
 
 
 def validate_is_not_none(*args, **kwargs):

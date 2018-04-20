@@ -3,7 +3,7 @@ import re
 from flask import json, current_app, request
 from simple_settings import settings
 
-from api import exceptions, error_codes
+from magicarp import exceptions, error_codes
 
 
 class JsonEncoder(json.JSONEncoder):

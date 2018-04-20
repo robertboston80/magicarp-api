@@ -153,7 +153,7 @@ class MultipleValidationError(BaseValidationError):
         }
         """
         # this import is on purpose to avoid cyclic-imports
-        from api.tools import misc
+        from magicarp.tools import misc
 
         tmp = {}
 
