@@ -7,5 +7,6 @@ from . import tools  # NOQA
 from . import schema  # NOQA
 from . import logic  # NOQA
 from . import routes  # NOQA
+from . import misc  # NOQA
 
 from . import server_tools, server  # NOQA
