@@ -25,6 +25,9 @@ class BaseEndpoint(object):
 
     argument_name = 'payload'
 
+    # TODO: make sure that url is prefixed with forward slash
+    # url = '/'
+
     @classmethod
     def name(cls):
         return cls.__name__
@@ -96,7 +99,7 @@ class BaseEndpoint(object):
                 expected_response.populate(result)
             except exceptions.ApiException as err:
                 raise exceptions.ResponseCriticalError(
-                    "Result from endpoint do not fullfill contract. "
+                    "Result from endpoint do not fulfil contract. "
                     "Original error: " + str(err))
 
             result = expected_response
