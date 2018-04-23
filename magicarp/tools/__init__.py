@@ -17,10 +17,6 @@ from dateutil import parser as date_parser
 from . import (  # NOQA
     misc, api_request, validators, response, endpoint)
 
-# pylint: disable=wrong-import-order
-from magicarp.tools.endpoint import BaseEndpoint, EndpointContainer  # NOQA
-# pylint: enable=wrong-import-order
-
 # modules that are almost ready:
 # logging
 
