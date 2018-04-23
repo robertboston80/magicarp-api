@@ -5,7 +5,15 @@ class MagicarpApiException(Exception):
     pass
 
 
+class RoutingConfigurationError(MagicarpApiException):
+    pass
+
+
 class DuplicateRouteError(MagicarpApiException):
+    pass
+
+
+class InvalidRoutingErrror(MagicarpApiException):
     pass
 
 
