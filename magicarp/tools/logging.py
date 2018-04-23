@@ -16,7 +16,7 @@ import flask
 
 from simple_settings import settings
 
-if settings.ROLLBAR_ENABLED:
+if settings.ENABLE_ROLLBAR:
     import rollbar
     import rollbar.contrib.flask
 
@@ -28,8 +28,7 @@ if settings.ROLLBAR_ENABLED:
         flask.got_request_exception.connect(
             rollbar.contrib.flask.report_exception, app)
 
-        if settings.ROLLBAR_ENABLED is True and \
-                settings.ROLLBAR_API_KEY is None:
+        if settings.ROLLBAR_API_KEY is None:
             raise ValueError("ROLLBAR_API_KEY not set")
 
         # send exception from `app` to rollbar, using flask's signal

@@ -52,8 +52,7 @@ def set_up(app):
     """
     @app.before_first_request
     def init_rollbar():  # pylint: disable=unused-variable
-        if settings.ENABLE_ROLLBAR:
-            tools.logging.init_rollbar(app)
+        tools.logging.init_rollbar(app)
 
     @app.before_request
     def before_request():  # pylint: disable=unused-variable
