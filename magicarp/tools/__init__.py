@@ -15,13 +15,8 @@ from simple_settings import settings
 from dateutil import parser as date_parser
 
 from . import (  # NOQA
-    misc, api_request, validators, response, endpoint)
-
-# modules that are almost ready:
-# logging
-
-# modules not yet fully implemented
-# auth, aut_model, cache, storage
+    logging, misc, api_request, auth_model, auth, validators, response,
+    endpoint)
 
 
 def dt_utcnow():
