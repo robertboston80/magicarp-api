@@ -174,7 +174,6 @@ class Router(object):
 
         for blueprint in blueprints:
             if blueprint.namespace not in version:
-                print("set", blueprint)
                 version[blueprint.namespace] = {
                     '__master_blueprint__': blueprint,
                 }
