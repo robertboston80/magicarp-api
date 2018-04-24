@@ -163,71 +163,111 @@ class Router(object):
 
         self.versions[normalised_version] = blueprints
 
-    def _build_version(self, blueprints, previous_version, current_version):
-        for blp in blueprints:
-            sapling = {
-                '__master_blueprint__': blp,
-            }
+    def _merge_blueprints(
+            self, blueprints, versionless_blueprints=None,
+            previous_version=None):
+        version = {}
+        excludes = []
+        # this is helper variable to be not forced to deepcopy versionless
+        # blueprints
+        namespace_processed = []
 
-            if blp.namespace in previous_version:
-                sapling = previous_version[blp.namespace]
+        for blueprint in blueprints:
+            if blueprint.namespace not in version:
+                print("set", blueprint)
+                version[blueprint.namespace] = {
+                    '__master_blueprint__': blueprint,
+                }
 
-            for name, endpoint in blp.routes.items():
-                sapling[name] = endpoint
+            version[blueprint.namespace].update(blueprint.routes)
 
-            for name in blp.excludes:
-                if name not in sapling:
-                    raise exceptions.RoutingConfigurationError(
-                        "Unable to exclude an endpoint that does not "
-                        "exist, attempted to exclude: {}".format(name))
+            excludes = blueprint.excludes
 
-                del sapling[name]
+            if versionless_blueprints and \
+                    blueprint.namespace in versionless_blueprints:
+                for name, endpoint in \
+                        versionless_blueprints[blueprint.namespace].items():
+                    if name in excludes or name == '__master_blueprint__':
+                        continue
 
-            current_version[blp.namespace] = sapling
+                    version[blueprint.namespace][name] = endpoint
 
-        return current_version
+                    namespace_processed.append(blueprint.namespace)
+
+            if previous_version and \
+                    blueprint.namespace in previous_version:
+
+                for name, route in \
+                        previous_version[blueprint.namespace].items():
+
+                    if name in version[blueprint.namespace] or \
+                            name in excludes:
+                        continue
+
+                    version[blueprint.namespace][name] = route
+
+        if versionless_blueprints:
+            for namespace, endpoints in versionless_blueprints.items():
+                if namespace in namespace_processed:
+                    continue
+
+                version[namespace] = {}
+
+                for name, endpoint in endpoints.items():
+                    version[namespace][name] = endpoint
+
+        return version
 
     def get_normalised_blueprints(self):
+        """Rules:
+
+         - versionless blueprints are always attached, but can be overriden or
+            excluded
+         - blueprints from previous versions are joined only if there is
+           matching namespace and non-matching name of the endpoint
+         - versionless blueprints never override anything, but can be overriden
+        """
         versionless_blueprints = \
             self.versions.pop(None) if None in self.versions else []
 
         versions = list(self.versions.keys())
         versions.sort()
 
-        baobab = {}
-        previous_version = {}
+        tree = []
 
         if versionless_blueprints:
-            baobab[None] = self._build_version(
-                versionless_blueprints, previous_version, {})
-            previous_version = copy.deepcopy(baobab[None])
+            tree.append({
+                'version': None,
+                'namespaces': self._merge_blueprints(versionless_blueprints),
+            })
 
         # first resolve inheritance and extends/overrides/exclusions
         for version in versions:
-            baobab[version] = self._build_version(
-                self.versions[version], previous_version, {})
-
-            previous_version = copy.deepcopy(baobab[version])
-
-            if versionless_blueprints:
-                baobab[version] = self._build_version(
-                    versionless_blueprints, previous_version, baobab[version])
-
-                previous_version = copy.deepcopy(baobab[version])
+            tree.append({
+                'version': version,
+                'namespaces': self._merge_blueprints(
+                    self.versions[version],
+                    tree[0]['namespaces'] if tree else {},
+                    tree[-1]['namespaces'] if len(tree) > 1 else {}
+                ),
+            })
 
         # at this stage we should all inheritance resolved and we should be
-        # working with semi-complex tree of versions->namespaces->endpoints
+        # working with semi-complex list of versions with namespaces holding
+        # endpoints
 
         # all that needs to be done is to register each leaf as endpoint with
-        # its parent blueprint
+        # its master blueprint
 
         normalised_blueprints = []
 
-        for version, tree in baobab.items():
+        for version, blp in [
+                (dct['version'], dct['namespaces']) for dct in tree]:
+
             version_as_string = '' if version is None else '.'.join(
                 [str(ver) for ver in version if ver != -1])
 
-            for namespace, endpoints in tree.items():
+            for namespace, endpoints in blp.items():
                 url = Url()
 
                 if version_as_string:
@@ -235,7 +275,7 @@ class Router(object):
 
                 url.add(namespace)
 
-                url_prefix = url.as_full_url()
+                url_prefix = url.as_full_url()[:-1]
 
                 master_blueprint = endpoints.pop('__master_blueprint__')
 
