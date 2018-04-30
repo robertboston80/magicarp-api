@@ -1,7 +1,7 @@
 import os
 import logging
 
-APP_NAME = 'scaffold'
+APP_NAME = 'magicarp'
 
 DEBUG = False
 TESTING = False
@@ -14,17 +14,14 @@ ENV = None
 
 # if you have one backend for multiple api's, change namespace to avoid user
 # session collision
-SESSION_NAMESPACE = 'api'
+SESSION_NAMESPACE = 'magicarp'
 
 DEFAULT_LANGUAGE_CODE = 'en_GB'
 DATE_TIMEZONE = 'UTC'
 
 # leave None if you don't want to use rollbar
 ROLLBAR_API_KEY = None
-
 ROLLBAR_ENABLED = False
-
-ENABLE_ROLLBAR = False
 
 BASE_LOCATION = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..', '..'))

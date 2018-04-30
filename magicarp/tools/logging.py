@@ -16,7 +16,7 @@ import flask
 
 from simple_settings import settings
 
-if settings.ENABLE_ROLLBAR:
+if settings.ROLLBAR_ENABLED:
     import rollbar
     import rollbar.contrib.flask
 
