@@ -26,6 +26,8 @@ ROLLBAR_ENABLED = False
 BASE_LOCATION = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..', '..'))
 
+CACHE_ENGINE = 'dummy'
+
 LOG_ENABLED = True
 
 LOGGING_FORMAT = "[%(asctime)s] %(message)s"
