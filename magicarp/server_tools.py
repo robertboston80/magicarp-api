@@ -1,12 +1,8 @@
-# encoding: utf8
-
 import logging
 
 import flask
 
 from simple_settings import settings
-
-# from flask import request, jsonify, got_request_exception
 
 from magicarp import tools, exceptions
 
