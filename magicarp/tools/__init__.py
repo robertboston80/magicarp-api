@@ -8,4 +8,4 @@ be separated to own namespace.
 """
 
 from . import (  # NOQA
-    logging, misc, api_request, auth_model, auth, validators, datetime)
+    datetime, logging, cache, api_request, auth_model, auth, validators, misc)

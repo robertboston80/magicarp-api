@@ -6,7 +6,9 @@ from validators import (  # NOQA
     truthy, url, uuid, ValidationFailure)
 # pylint: enable=unused-import
 
-from magicarp import exceptions, tools
+from magicarp import exceptions
+
+from . import datetime
 
 
 def validate_is_not_none(*args, **kwargs):
@@ -92,7 +94,7 @@ class IsInFuture(BaseValidator):
         """Validator works under assumption that value is valid datetime
         object.
         """
-        return truthy(value > tools.get_current_datetime())
+        return truthy(value > datetime.get_current_datetime())
 
     @property
     def default_message(self):
