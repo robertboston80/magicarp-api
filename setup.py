@@ -10,8 +10,8 @@ setup(
     name='magicarp-api',
     version='1.0',
     description=(
-        'Flask based api - not complete api but solid building blocks '
-        'to create one of your own'
+        'Magicarp-Api if flask based, micro-framework that allows to build'
+        'functional api from get-go'
     ),
     long_description=readme(),
     classifiers=[
@@ -19,7 +19,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3 :: Only',
         'Topic :: Software Development :: Version Control :: Git',
-        'Topic :: Utilities',
     ],
     test_suite='nose.collector',
     tests_require=['nose'],
