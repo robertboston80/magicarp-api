@@ -1,10 +1,10 @@
 from flask import request
 
-from magicarp import tools, router
+from magicarp import router, endpoint
 from magicarp.misc import logic
 
 
-class Ping(tools.endpoint.BaseEndpoint):
+class Ping(endpoint.BaseEndpoint):
     """Ping to get response: "pong".
 
     Used for health check.
@@ -18,7 +18,7 @@ class Ping(tools.endpoint.BaseEndpoint):
         return response
 
 
-class UrlMap(tools.endpoint.BaseEndpoint):
+class UrlMap(endpoint.BaseEndpoint):
     """All urls available on api.
     """
     url = '/'

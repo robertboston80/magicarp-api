@@ -1,6 +1,6 @@
 from flask import request
 
-from magicarp import exceptions, tools
+from magicarp import exceptions, tools, response
 
 
 class BaseEndpoint(object):
@@ -17,13 +17,13 @@ class BaseEndpoint(object):
     output_schema = None
 
     # which response to use, defaults to (success, 200)
-    response = tools.response.read_response
+    response = response.read_response
 
     # if set given permission will be checked before attempting to call
     # endpoint
     permissions = ()
 
-    argument_name = 'payload'
+    argument_name = 'input_schema'
 
     # TODO: make sure that url is prefixed with forward slash
     # url = '/'
