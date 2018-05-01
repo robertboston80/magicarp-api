@@ -1,6 +1,6 @@
 from flask import request
 
-from magicarp import exceptions, tools, response
+from . import exceptions, response, tools
 
 
 class BaseEndpoint(object):

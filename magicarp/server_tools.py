@@ -4,7 +4,7 @@ import flask
 
 from simple_settings import settings
 
-from magicarp import tools, exceptions
+from . import exceptions, tools
 
 
 def create_app(
