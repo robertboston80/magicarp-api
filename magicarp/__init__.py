@@ -13,3 +13,5 @@ from . import endpoint  # NOQA
 from . import server_tools  # NOQA
 
 from . import common # NOQA
+
+routing = router.Router()

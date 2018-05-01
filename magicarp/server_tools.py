@@ -9,7 +9,8 @@ from . import exceptions, tools
 
 def create_app(
         before_set_up=None, set_up=None, register_error_handlers=None,
-        register_loggers=None, before_routes=None, after_routes=None):
+        register_loggers=None, before_routes=None, after_routes=None,
+        register_common_routes=True):
     app = flask.Flask(settings.APP_NAME)
 
     app.config.update(
@@ -38,7 +39,7 @@ def create_app(
     if before_routes:
         before_routes(app)
 
-    register_routes(app)
+    register_routes(app, register_common_routes)
 
     if after_routes:
         after_routes(app)
@@ -154,8 +155,15 @@ def _set_up(app):
     app.request_class = tools.api_request.ApiRequest
 
 
-def register_routes(app):
-    from magicarp.routes import routing
+def register_routes(app, register_common_routes):
+    from magicarp import routing
+
+    if register_common_routes:
+        from magicarp import common
+
+        routing.register_version(None, [
+            common.routes.blueprint,
+        ])
 
     # from now on every attempt to register or de-register version will cause
     # exception
