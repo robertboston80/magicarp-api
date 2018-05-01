@@ -1,7 +1,7 @@
 from flask import request
 
 from magicarp import router, endpoint
-from magicarp.misc import logic
+from . import logic
 
 
 class Ping(endpoint.BaseEndpoint):

@@ -66,7 +66,7 @@ class BaseEndpoint(object):
         if request.headers.get('Content-Type') == 'application/json':
             payload = request.get_json()
         else:
-            payload = tools.misc.to_json(request.values)
+            payload = tools.helpers.to_json(request.values)
 
         if self.input_schema:
             # pylint: disable=not-callable

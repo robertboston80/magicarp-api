@@ -102,7 +102,7 @@ class SchemaField(base.BaseSchemaField, BaseInputField):
 
         required.sort()
 
-        required = tools.misc.build_tree(required)
+        required = tools.helpers.build_tree(required)
 
         return required
 

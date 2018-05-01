@@ -161,13 +161,13 @@ class MultipleValidationError(BaseValidationError):
         }
         """
         # this import is on purpose to avoid cyclic-imports
-        from magicarp.tools import misc
+        from magicarp import tools
 
         tmp = {}
 
         for key, errors in self.errors.items():
             tmp[key] = {
-                'error_code': misc.make_error_code(key, self.schema),
+                'error_code': tools.helpers.make_error_code(key, self.schema),
                 'errors': errors,
             }
 

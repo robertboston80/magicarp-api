@@ -147,7 +147,7 @@ def _set_up(app):
     app.debug = settings.DEBUG
 
     # custom encoder is set, update it's implementation if needed
-    app.json_encoder = tools.misc.JsonEncoder
+    app.json_encoder = tools.helpers.JsonEncoder
 
     # custom request class in case you need more functionality than what Flask
     # offers
