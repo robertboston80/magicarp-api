@@ -11,6 +11,6 @@ from . import misc  # NOQA
 from . import response  # NOQA
 from . import endpoint  # NOQA
 
-from . import server_tools, server  # NOQA
+from . import server_tools  # NOQA
 
 from . import routes  # NOQA
