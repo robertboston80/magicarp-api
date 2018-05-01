@@ -1,3 +1,11 @@
+1.0.5 (2018-05-01)
+~~~~~~~~~~~~~~~~~~
+
+New Features:
+
+* Common routes can be easily turned off
+* Rename common subpackages/routes to be easily identifiable as non-core parts
+
 1.0.4 (2018-05-01)
 ~~~~~~~~~~~~~~~~~~
 
