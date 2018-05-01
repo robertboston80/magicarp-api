@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def readme():
@@ -35,6 +35,6 @@ setup(
         'validators==0.12.1',
     ],
     include_package_data=False,
-    packages=['magicarp'],
+    packages=find_packages(),
     zip_safe=False
 )
