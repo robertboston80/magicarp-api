@@ -8,7 +8,7 @@ from validators import (  # NOQA
 
 from magicarp import exceptions
 
-from . import datetime
+from . import datetime_helpers as datetime
 
 
 def validate_is_not_none(*args, **kwargs):

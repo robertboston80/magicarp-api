@@ -8,7 +8,7 @@ import json
 
 from simple_settings import settings
 
-from . import cache, misc, auth_model
+from . import cache, helpers, auth_model
 
 
 def validate_token(user_uid, token):
@@ -16,7 +16,7 @@ def validate_token(user_uid, token):
     if not all([token, user_uid]):
         raise ValueError("Either token or uid is empty")
 
-    key = misc.generate_session_key(user_uid)
+    key = helpers.generate_session_key(user_uid)
     response = cache.get_key(key)
 
     if not response:
@@ -39,7 +39,7 @@ def get_user_via_auth_token(auth_token):
     except (AttributeError, ValueError):
         return auth_model.UnauthorizedUser()
 
-    auth_engine = misc.get_auth_engine()
+    auth_engine = helpers.get_auth_engine()
 
     user = auth_engine.get_user_by_uid(uid=user_uid)
 

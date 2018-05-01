@@ -13,17 +13,19 @@ import sys
 
 import flask
 
-from simple_settings import settings
-
-if settings.ROLLBAR_ENABLED:
+try:
     import rollbar
     import rollbar.contrib.flask
+except ImportError:
+    pass
 
-    def init_rollbar(app):  # pragma: no cover
+from simple_settings import settings
+
+def init_logging(app):  # pragma: no cover
+    if settings.ROLLBAR_ENABLED:
         # NOTE: this will catch only unhandled exceptions, handled
         # exceptions are going through proper exception handling as defined
         # in server_tools
-
         flask.got_request_exception.connect(
             rollbar.contrib.flask.report_exception, app)
 
@@ -44,18 +46,10 @@ if settings.ROLLBAR_ENABLED:
             allow_logging_basic_config=False
         )
 
-    def rollbar_send_message(message, log_level='warning'):  # pragma: no cover
+def send_message(message, log_level='warning'):  # pragma: no cover
+    if settings.ROLLBAR_ENABLED:
         rollbar.report_message(message, log_level)
 
-    def rollbar_sys_info(**kwargs):  # pragma: no cover
+def sys_info(**kwargs):  # pragma: no cover
+    if settings.ROLLBAR_ENABLED:
         rollbar.report_exc_info(sys.exc_info(), **kwargs)
-
-else:
-    def init_rollbar(app):  # pragma: no cover
-        pass
-
-    def rollbar_send_message(message, log_level='warning'):  # pragma: no cover
-        pass
-
-    def rollbar_sys_info(**kwargs):  # pragma: no cover
-        pass

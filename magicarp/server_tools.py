@@ -109,7 +109,7 @@ def _set_up(app):
     @app.before_first_request
     def init_rollbar():  # pylint: disable=unused-variable
         """This is only an example, rollbar is not hardcoded at all"""
-        tools.logging.init_rollbar(app)
+        tools.logging.init_logging(app)
 
     @app.before_request
     def before_request():  # pylint: disable=unused-variable

@@ -218,7 +218,7 @@ class BaseBoolField(BaseField):
 
 class BaseDateField(BaseField):
     def get_normal(self, value):
-        return tools.datetime.parse_into_datetime(value)
+        return tools.datetime_helpers.parse_into_datetime(value)
 
 
 class BaseStringField(BaseField):

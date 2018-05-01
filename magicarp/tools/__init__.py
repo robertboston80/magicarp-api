@@ -7,5 +7,10 @@ framework. Package holds modules and assorted functions that are too small to
 be separated to own namespace.
 """
 
-from . import (  # NOQA
-    datetime, logging, cache, api_request, auth_model, auth, validators, misc)
+# first import all the modules that do not have any other dependency
+from . import datetime_helpers, api_request, logging, auth_model, cache
+
+# then all others that are actually dependening on other modules
+from . import helpers
+from . import auth
+from . import validators
