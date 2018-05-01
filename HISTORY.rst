@@ -1,3 +1,11 @@
+1.0.3 (2018-05-01)
+~~~~~~~~~~~~~~~~~~
+
+Bug Fixes:
+
+* Fix simple setting striggering too early to mess up import order (and cause
+  in some cases cyclic-import)
+
 1.0.2 (2018-05-01)
 ~~~~~~~~~~~~~~~~~~
 
