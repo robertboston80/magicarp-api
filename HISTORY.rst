@@ -1,3 +1,12 @@
+1.0.8 (2018-05-02)
+~~~~~~~~~~~~~~~~~~
+
+New Features:
+
+ * increment versions of pytz and simple-settings
+
+Version bump to force cache flush
+
 1.0.7 (2018-05-01)
 ~~~~~~~~~~~~~~~~~~
 
