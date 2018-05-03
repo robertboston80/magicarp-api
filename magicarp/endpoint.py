@@ -25,9 +25,6 @@ class BaseEndpoint(object):
 
     argument_name = 'input_schema'
 
-    # TODO: make sure that url is prefixed with forward slash
-    # url = '/'
-
     @classmethod
     def name(cls):
         return cls.__name__
@@ -52,11 +49,12 @@ class BaseEndpoint(object):
 
         return "[Docstring not set nor attribute long_description]"
 
-    def parse_output(self, response):
-        return response
+    def parse_output(self, resp):
+        return resp
 
     def action(self, *args, **kwargs):
-        raise exceptions.ApiRuntimeError("Endpoint do not implement action")
+        raise exceptions.EndpointNotImplementedError(
+            "Endpoint do not implement action")
 
     @property
     def request(self):
@@ -95,12 +93,7 @@ class BaseEndpoint(object):
                 self.output_schema.__name__.lower())
             # pylint: enable=not-callable
 
-            try:
-                expected_response.populate(result)
-            except exceptions.ApiException as err:
-                raise exceptions.ResponseCriticalError(
-                    "Result from endpoint do not fulfil contract. "
-                    "Original error: " + str(err))
+            expected_response.populate(result)
 
             result = expected_response
 

@@ -4,13 +4,13 @@ import flask
 
 from simple_settings import settings
 
-from . import exceptions, tools
+from . import exceptions, tools, response
 
 
 def create_app(
         before_set_up=None, set_up=None, register_error_handlers=None,
         register_loggers=None, before_routes=None, after_routes=None,
-        register_common_routes=True):
+        register_extra_error_handlers=None, register_common_routes=True):
     app = flask.Flask(settings.APP_NAME)
 
     app.config.update(
@@ -31,6 +31,9 @@ def create_app(
     else:
         _register_error_handlers(app)
 
+    if register_extra_error_handlers:
+        register_extra_error_handlers(app)
+
     if register_loggers:
         register_loggers(app)
     else:
@@ -48,30 +51,58 @@ def create_app(
 
 
 def _register_error_handlers(app):
+    @app.errorhandler(exceptions.NotFoundError)
+    def handle_missing_asset(err):  # pylint: disable=unused-variable
+        """When we request asset but it's not found, ie. /user/uid/1/ should
+        return user but there is no user for uid 1.
+        """
+        return response.error_response(err, 404)
+
+    @app.errorhandler(exceptions.EndpointNotImplementedError)
+    def handle_missing_implementation(err):  # pylint: disable=unused-variable
+        """When endpoint was defined but it's content is empty.
+        """
+        app.logger.error(err, exc_info=True)
+
+        return response.error_response(err, 500)
+
     @app.errorhandler(exceptions.BasePayloadError)
     def handle_malformed_input(err):  # pylint: disable=unused-variable
         """When incomming data is one way or another malformed, ie. missing
-        key on input or is of wrong type.
+        key, wrong type or field that is not expected for given endpoint.
         """
         app.logger.error(err, exc_info=True)
 
-        return tools.response.error_response(err, 400)
-
-    @app.errorhandler(exceptions.NotFoundError)
-    def handle_missing_asset(err):  # pylint: disable=unused-variable
-        """When incomming data is one way or another malformed, ie. missing
-        key on input or is of wrong type.
-        """
-        return tools.response.error_response(err, 404)
+        return response.error_response(err, 400)
 
     @app.errorhandler(exceptions.BaseValidationError)
     def handle_invalid_input(err):  # pylint: disable=unused-variable
-        """When incomming data is not passing specification as described by
-        spec, ie. email provided is not a valid email.
+        """When incomming data is valid in structure and thus has passed
+        handle_malformed_input check, but is not avalid, ie. client_id
+        has to be positive integer or email needs to have '@'
         """
         app.logger.error(err, exc_info=True)
 
-        return tools.response.error_response(err, 500)
+        return response.error_response(err, 500)
+
+    @app.errorhandler(exceptions.ResponseError)
+    def handle_invalid_response(err):  # pylint: disable=unused-variable
+        """When application handled incomming data, but according to definition
+        of endpoint response data makes little to no sense. Usually happens
+        when schema is stale or business logic has changed recently.
+        """
+        app.logger.error(err, exc_info=True)
+
+        return response.error_response(err, 500)
+
+    @app.errorhandler(Exception)
+    def handle_other_magicarp_errors(err):  # pylint: disable=unused-variable
+        """Handler for everything else that comes from magicarp and has no more
+        specific error handling.
+        """
+        app.logger.error(err, exc_info=True)
+
+        return response.error_response(err, 500)
 
     @app.errorhandler(Exception)
     def handle_remaining_errors(err):  # pylint: disable=unused-variable
@@ -79,7 +110,7 @@ def _register_error_handlers(app):
         """
         app.logger.error(err, exc_info=True)
 
-        return tools.response.error_response(err, 500)
+        return response.error_response(err, 500)
 
 
 def _register_loggers(app):
@@ -135,7 +166,7 @@ def _set_up(app):
         flask.request.user = user
 
     @app.after_request
-    def after_request(response):  # pylint: disable=unused-variable
+    def after_request(resp):  # pylint: disable=unused-variable
         """If there is anything that api should do before ending request, add
         it in here for example you might have transactional backend that
         require commit or rollback at the end of each request.
@@ -143,7 +174,7 @@ def _set_up(app):
         NOTE: if unhandled exception happens, this function is not going to be
         executed.
         """
-        return response
+        return resp
 
     app.debug = settings.DEBUG
 

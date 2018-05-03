@@ -1,5 +1,4 @@
 import collections
-import copy
 
 from flask import Blueprint as FlaskBlueprint
 
@@ -100,7 +99,7 @@ class Router(object):
             return
 
         if len(version) < 1:
-            raise exceptions.InvalidRoutingErrror(
+            raise exceptions.RoutingConfigurationError(
                 "Version requires to be a tuple-like object with "
                 "at least one integer-like value, got: {}".format(version))
 
@@ -108,13 +107,13 @@ class Router(object):
             try:
                 int(ver_number)
             except (TypeError, ValueError):
-                raise exceptions.InvalidRoutingErrror(
+                raise exceptions.RoutingConfigurationError(
                     "One of version numbers is not integer-like value, "
                     "got: {}".format(ver_number))
 
     def _validate_blueprints(self, blueprints):
         if not isinstance(blueprints, collections.Iterable):
-            raise exceptions.InvalidRoutingErrror(
+            raise exceptions.RoutingConfigurationError(
                 "Registering version requires to pass collection of "
                 "blueprints that is iterable")
 
@@ -122,9 +121,9 @@ class Router(object):
             blpr for blpr in blueprints if not isinstance(blpr, Blueprint)]
 
         if not_a_blueprint:
-            raise exceptions.InvalidRoutingErrror(
+            raise exceptions.RoutingConfigurationError(
                 "One of the blueprints on collection of blueprints is "
-                "not really a subclass of magicarp.router.Blueprint")
+                "not a subclass of magicarp.router.Blueprint")
 
     def lock(self):
         self.locked = True
@@ -134,9 +133,9 @@ class Router(object):
 
     def _check_lock(self):
         if self.locked is True:
-            raise exceptions.InvalidRoutingErrror(
-                "It's impossible to register new routes "
-                "after app was already created")
+            raise exceptions.RoutingConfigurationError(
+                "It's impossible to register new routes after app was "
+                "already created")
 
     def _normalise_version(self, version):
         # to have an easy way to compare and sort versions we normalise then

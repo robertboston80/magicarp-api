@@ -22,11 +22,13 @@ class SchemaField(base.BaseSchemaField, BaseOutputField):
 
             try:
                 field.populate(sub_payload)
-            except exceptions.InvalidPayloadError as err:
+            except (
+                    exceptions.InvalidPayloadError,
+                    exceptions.ResponseError) as err:
                 error_invalid_payload.append((field.name, str(err)))
 
         if error_invalid_payload:
-            raise exceptions.ResponseCriticalError(
+            raise exceptions.ResponseError(
                 error_invalid_payload=error_invalid_payload
             )
 
@@ -36,7 +38,7 @@ class SchemaField(base.BaseSchemaField, BaseOutputField):
         try:
             return super().get_normal(value)
         except exceptions.InvalidPayloadError as err:
-            raise exceptions.ResponseConversionError(err)
+            raise exceptions.ResponseError(err)
 
 
 class IntegerField(base.BaseIntegerField, BaseOutputField):
@@ -44,7 +46,7 @@ class IntegerField(base.BaseIntegerField, BaseOutputField):
         try:
             return super().get_normal(value)
         except exceptions.InvalidPayloadError as err:
-            raise exceptions.ResponseConversionError(err)
+            raise exceptions.ResponseError(err)
 
 
 class StringField(base.BaseStringField, BaseOutputField):
@@ -60,7 +62,7 @@ class BoolField(base.BaseBoolField, BaseOutputField):
         try:
             return super().get_normal(value)
         except exceptions.InvalidPayloadError as err:
-            raise exceptions.ResponseConversionError(err)
+            raise exceptions.ResponseError(err)
 
 
 class CollectionField(base.BaseCollectionField, BaseOutputField):
@@ -68,4 +70,4 @@ class CollectionField(base.BaseCollectionField, BaseOutputField):
         try:
             return super().get_normal(value)
         except exceptions.InvalidPayloadError as err:
-            raise exceptions.ResponseConversionError(err)
+            raise exceptions.ResponseError(err)

@@ -6,26 +6,16 @@ class MagicarpApiException(Exception):
 
 
 class RoutingConfigurationError(MagicarpApiException):
+    """Exception happens when attemt to register endpoint fails. As such is
+    never to be visible for a flask application.
+    """
     pass
 
 
-class DuplicateRouteError(MagicarpApiException):
-    pass
-
-
-class InvalidRoutingErrror(MagicarpApiException):
-    pass
-
-
-class ApiRuntimeError(MagicarpApiException):
-    pass
-
-
-class ApiValueError(MagicarpApiException):
-    pass
-
-
-class BasePayloadError(MagicarpApiException):
+class EndpointNotImplementedError(MagicarpApiException):
+    """When endpoint was defined but is missing action method (that actually
+    does things)
+    """
     pass
 
 
@@ -35,7 +25,10 @@ class NotFoundError(MagicarpApiException):
     pass
 
 
-class PayloadError(BasePayloadError):
+class BaseDataError(MagicarpApiException):
+    """Exception is able to aggregate any number of errors and then display
+    them as a dictionary of problems.
+    """
     def __init__(
             self, *args, error_required_field=None, error_invalid_payload=None,
             **kwargs):
@@ -67,45 +60,32 @@ class PayloadError(BasePayloadError):
         if self.error_invalid_payload:
             tmp['payload_error'] = {}
 
-            print(self.error_invalid_payload)
-
             for key, error in self.error_invalid_payload:
                 if key not in tmp['payload_error']:
                     tmp['payload_error'][key] = []
 
                 tmp['payload_error'][key].append(error)
 
-        return tmp
+        # NOTE: this is something that should be reviewed soon
+        return tmp if tmp else str(super().__str__())
 
     def __str__(self):
         return json.dumps(self.get_errors_as_dict())
+
+
+class BasePayloadError(BaseDataError):
+    pass
+
+
+class PayloadError(BasePayloadError):
+    pass
 
 
 class InvalidPayloadError(BasePayloadError):
     pass
 
 
-class MissingPayloadError(BasePayloadError):
-    pass
-
-
-class BaseResponseError(MagicarpApiException):
-    pass
-
-
-class ResponseConversionError(BaseResponseError):
-    pass
-
-
-class ResponseCriticalError(BaseResponseError):
-    pass
-
-
-class BaseBusinessLogicException(MagicarpApiException):
-    pass
-
-
-class BusinessLogicException(MagicarpApiException):
+class ResponseError(BaseDataError):
     pass
 
 
