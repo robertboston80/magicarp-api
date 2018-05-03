@@ -214,28 +214,16 @@ def to_json(payload):
 
             but will cause exception in any other case
     """
-    # print("===PAYLOAD===")
-    # print(payload)
-
     flat_tree = _flatten_payload(payload)
-
-    # print("===FLAT===")
-    # print(flat_tree)
 
     baobab = {}
 
     for structure, value in flat_tree:
         _build_tree(baobab, structure, value)
 
-    # print("===BAOBAB===")
-    # print(baobab)
-
     # while building lists, we use custom class Array, we need to convert them
     # back to standard python primitve
     baobab = _array_to_list(baobab)
-
-    # print("===FINAL_BAOBAB===")
-    # print(baobab)
 
     return baobab
 
