@@ -8,7 +8,7 @@ def readme():
 
 setup(
     name='magicarp-api',
-    version='1.0.8',
+    version='1.0.9',
     description=(
         'Magicarp-Api if flask based, micro-framework that allows to '
         'build functional api from get-go'
