@@ -18,7 +18,7 @@ class SchemaField(base.BaseSchemaField, BaseOutputField):
 
             field.parent = self
 
-            sub_payload = payload.pop(field.name)
+            sub_payload = payload[field.name]
 
             try:
                 field.populate(sub_payload)

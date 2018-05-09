@@ -129,7 +129,7 @@ class SchemaField(base.BaseSchemaField, BaseInputField):
 
                 continue
 
-            sub_payload = payload.pop(field.name)
+            sub_payload = payload[field.name]
 
             field.parent = self
 
