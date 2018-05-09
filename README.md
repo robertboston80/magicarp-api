@@ -170,7 +170,7 @@ In `api/v1/user.py`:
             # assumption here is that our business logic create_user accepts
             # all fields from user_schema, and returns dictionary
             dct_user = business_logic.user.create_user(
-                **user_schema.as_kwargs())
+                **user_schema.as_dictionary())
 
             # because blueprint is only extension of flask, we can use it for
             # functions like url_for and etc

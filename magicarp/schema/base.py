@@ -68,9 +68,6 @@ class BaseField(object):
     def is_set(self):
         return not isinstance(self.data, NotSet)
 
-    def as_kwarg(self):
-        return self.data
-
     def get_canonical_string(self):
         ancestors = []
         parent = self.parent
@@ -84,7 +81,7 @@ class BaseField(object):
 
         return '.'.join(ancestors)
 
-    def as_json(self, user):
+    def as_dictionary(self, user=None):
         if not self.is_set():
             return None
 
@@ -107,16 +104,6 @@ class BaseSchemaField(BaseField):
 
             return field
 
-    def as_kwargs(self):
-        res = {}
-        for field in self.fields:
-            if not field.is_set():
-                continue
-
-            res[field.name] = field.as_kwarg()
-
-        return res
-
     def get_normal(self, value):
         if not isinstance(value, (dict,)):
             raise exceptions.InvalidPayloadError(
@@ -128,7 +115,7 @@ class BaseSchemaField(BaseField):
     def populate(self, value):
         self.data = self.fields
 
-    def as_json(self, user):
+    def as_dictionary(self, user=None):
         if not self.is_set():
             return None
 
@@ -138,7 +125,7 @@ class BaseSchemaField(BaseField):
             if not field.is_set():
                 continue
 
-            tmp[field.name] = field.as_json(user)
+            tmp[field.name] = field.as_dictionary(user=user)
 
         return tmp
 
@@ -165,15 +152,6 @@ class BaseCollectionField(BaseField):
 
         self.data = data
 
-    def as_kwargs(self):
-        res = []
-
-        if self.is_set():
-            for obj in self.data:
-                res.append(obj.as_kwarg())
-
-        return res
-
     def get_normal(self, value):
         if not isinstance(value, collections.Iterable):
             raise exceptions.InvalidPayloadError(
@@ -182,19 +160,19 @@ class BaseCollectionField(BaseField):
 
         return list(value)
 
-    def as_json(self, user):
+    def as_dictionary(self, user=None):
         if not self.is_set():
             return None
 
-        tmp = []
+        res = []
 
         for obj in self.data:
             if not obj.is_set():
                 continue
 
-            tmp.append(obj.as_json(user))
+            res.append(obj.as_dictionary(user=user))
 
-        return tmp
+        return res
 
 
 class BaseBoolField(BaseField):

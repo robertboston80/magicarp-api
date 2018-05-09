@@ -12,7 +12,7 @@ class JsonEncoder(json.JSONEncoder):
     """
     def default(self, obj):  # pylint: disable=method-hidden
         try:
-            return obj.as_json(user=request.user)
+            return obj.as_dictionary(user=request.user)
         except (TypeError, AttributeError):  # pragma: no cover
             return super().default(obj)
 
