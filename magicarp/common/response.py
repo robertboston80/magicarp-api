@@ -40,14 +40,10 @@ class ResourceUpdated(field.SchemaField):
             "whenever resource was updated successfully.")
 
 
-class ListResponse(field.SchemaField):
-    fields = (
-        field.CollectionField(
-            "objects",
-            description="List of objects that will be fed to the response"),
-    )
+class ListResponse(field.CollectionField):
+    collection_type = field.StringField
 
     @property
     def description(self):
         return (
-            "Reply from api-server that replies with any kind of collection.")
+            "Reply from server that replies with any kind of collection.")
