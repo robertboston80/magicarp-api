@@ -14,9 +14,11 @@ class NotSet(object):
 class BaseField(object):
     description = ''
     parent = None
+    is_instance = False
 
     def __init__(
-            self, name, description=None, validators=None, allow_blank=True):
+            self, name, description=None, validators=None, allow_blank=True,
+            parent=None):
         """Short description of what all those arguments stand for:
 
             name :: the only mandatory field, it basically tells how the field
@@ -38,7 +40,8 @@ class BaseField(object):
                 be handled via validator but for certain systems null values
                 are impossible and in such cases it's not a validation error
 
-
+            parent :: if object is part of bigger tree we can set a parent to
+            it (helps with traversing)
         """
         self.name = name
         self.validators = [] if validators is None else validators
@@ -47,7 +50,11 @@ class BaseField(object):
         if description is not None:
             self.description = description
 
+        if parent is not None:
+            self.parent = parent
+
         self.data = NotSet()
+        self.is_instance = True
 
     def confirm_argument_is_of_expected_shape(self, value):
         """Function checks whether argument value is among expected outcomes.
@@ -58,6 +65,12 @@ class BaseField(object):
         if value is None and self.allow_blank is False:
             raise exceptions.InvalidPayloadError(
                 "None/null is not acceptable value for a field")
+
+    def make_new(self, parent):
+        return self.__class__(
+            name=self.name, description=self.description,
+            validators=self.validators, allow_blank=self.allow_blank,
+            parent=parent)
 
     def populate(self, value):
         self.confirm_argument_is_of_expected_shape(value)
@@ -99,6 +112,12 @@ class BaseSchemaField(BaseField):
 
         super().__init__(name, **kwargs)
 
+    def make_new(self, parent):
+        return self.__class__(
+            name=self.name, description=self.description,
+            validators=self.validators, allow_blank=self.allow_blank,
+            parent=parent, fields=self.fields)
+
     def get_field_by_name(self, name):
         for field in self.fields:
             if field.name != name:
@@ -125,11 +144,11 @@ class BaseSchemaField(BaseField):
 
         tmp = {}
 
-        for field in self.data:
+        for name, field in self.data.items():
             if not field.is_set():
                 continue
 
-            tmp[field.name] = field.as_dictionary(user=user)
+            tmp[name] = field.as_dictionary(user=user)
 
         return tmp
 
@@ -142,6 +161,12 @@ class BaseCollectionField(BaseField):
             self.collection_type = collection_type
 
         super().__init__(name, **kwargs)
+
+    def make_new(self, parent):
+        return self.__class__(
+            name=self.name, description=self.description,
+            validators=self.validators, allow_blank=self.allow_blank,
+            parent=parent, collection_type=self.collection_type)
 
     def confirm_argument_is_of_expected_shape(self, value):
         super().confirm_argument_is_of_expected_shape(value)
@@ -163,9 +188,14 @@ class BaseCollectionField(BaseField):
         data = []
 
         for idx, val in enumerate(value):
-            instance = self.collection_type(
-                '{} - instance - {}'.format(self.name, idx))
-            instance.parent = self
+            if self.collection_type.is_instance:
+                instance = self.collection_type.make_new(self)
+            else:
+                instance = self.collection_type(
+                    '{} - instance - {}'.format(self.name, idx), parent=self,
+                    description='{} - instance - {}'.format(
+                        self.description, idx))
+
             instance.populate(val)
 
             data.append(instance)

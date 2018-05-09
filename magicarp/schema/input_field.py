@@ -1,4 +1,5 @@
 import collections
+import copy
 
 from simple_settings import settings
 
@@ -107,36 +108,39 @@ class SchemaField(base.BaseSchemaField, BaseInputField):
         return required
 
     def populate(self, value):
-        payload = self.normalise(value)
+        self.confirm_argument_is_of_expected_shape(value)
 
         error_required_field = []
         error_invalid_payload = []
 
         required = self.collect_required_fields()
 
-        # TODO: we should explain more of how exactly payload should look like,
+        # TODO: if error happens FW needs to return more detailed exceptions,
         # for example we can say not only that given field is missing but that
         # it's the schema with 3 required sub-field, same with collections, not
         # only that collection has to be list but also that the list has to be
-        # of integers (for example)
+        # of integers
+
+        local_fields = []
+
+        payload = copy.deepcopy(value)
 
         for field in self.fields:
-            if field.name not in payload:
-                if field.name in required:
-                    error_required_field.append((
-                        field.get_canonical_string(),
-                        "Missing required field"))
+            if field.name not in payload and field.name in required:
+                error_required_field.append((
+                    field.get_canonical_string(), "Missing required field"))
 
-                continue
+            local_field = field.make_new(self)
 
-            sub_payload = payload[field.name]
+            if field.name in payload:
+                subpayload = payload.pop(field.name)
 
-            field.parent = self
+                try:
+                    field.populate(subpayload)
+                except exceptions.InvalidPayloadError as err:
+                    error_invalid_payload.append((field.name, str(err)))
 
-            try:
-                field.populate(sub_payload)
-            except exceptions.InvalidPayloadError as err:
-                error_invalid_payload.append((field.name, str(err)))
+            local_fields.append(local_field)
 
         if payload and settings.EXCEPTION_ON_UNRECOGNISED_INPUT:
             error_invalid_payload.append((
@@ -150,7 +154,7 @@ class SchemaField(base.BaseSchemaField, BaseInputField):
                 error_invalid_payload=error_invalid_payload
             )
 
-        self.data = self.fields
+        self.data = local_fields
 
     def validate(self):
         errors = {}

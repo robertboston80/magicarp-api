@@ -22,27 +22,27 @@ class SchemaField(base.BaseSchemaField, BaseOutputField):
 
         error_invalid_payload = []
 
+        local_fields = {}
+
         for field in self.fields:
-            if field.name not in value:
-                continue
+            local_field = field.make_new(self)
 
-            field.parent = self
+            if field.name in value:
+                try:
+                    local_field.populate(value[field.name])
+                except (
+                        exceptions.InvalidPayloadError,
+                        exceptions.ResponseError) as err:
+                    error_invalid_payload.append((field.name, str(err)))
 
-            sub_payload = value[field.name]
-
-            try:
-                field.populate(sub_payload)
-            except (
-                    exceptions.InvalidPayloadError,
-                    exceptions.ResponseError) as err:
-                error_invalid_payload.append((field.name, str(err)))
+            local_fields[field.name] = local_field
 
         if error_invalid_payload:
             raise exceptions.ResponseError(
                 error_invalid_payload=error_invalid_payload
             )
 
-        self.data = self.fields
+        self.data = local_fields
 
 
 class IntegerField(base.BaseIntegerField, BaseOutputField):
