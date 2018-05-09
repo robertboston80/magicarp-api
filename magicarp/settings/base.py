@@ -6,11 +6,7 @@ APP_NAME = 'magicarp'
 DEBUG = False
 TESTING = False
 
-ENV_TEST = 'TEST'
-ENV_PROD = 'PROD'
-ENV_DEV = 'DEV'
-
-ENV = None
+TEST_USER_ENABLED = False
 
 # if you have one backend for multiple api's, change namespace to avoid user
 # session collision
@@ -22,12 +18,14 @@ DATE_TIMEZONE = 'UTC'
 # leave None if you don't want to use rollbar
 ROLLBAR_API_KEY = None
 ROLLBAR_ENABLED = False
+ROLLBAR_ENV = 'dev'
 
 BASE_LOCATION = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..', '..'))
 
 CACHE_ENGINE = 'dummy'
 
+LOCAL_LOGS_ENABLED = True
 LOG_ENABLED = True
 
 LOGGING_FORMAT = "[%(asctime)s] %(message)s"

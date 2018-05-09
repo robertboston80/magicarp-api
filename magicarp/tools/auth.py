@@ -64,7 +64,7 @@ def retrieve_user_from_headers(headers):
     # person with certain default settings, another is more granular approach
     # that allows you to retrieve test user from endpoint of your choice (and
     # test for example permissions and/or interactions between users)
-    if settings.ENV == settings.ENV_TEST and \
+    if settings.TEST_USER_ENABLED and \
             'Enable-Static-Test-User' in headers:
         return auth_model.AuthorizedTestUser()
     elif not auth_token:

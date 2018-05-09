@@ -21,6 +21,7 @@ except ImportError:
 
 from simple_settings import settings
 
+
 def init_logging(app):  # pragma: no cover
     if settings.ROLLBAR_ENABLED:
         # NOTE: this will catch only unhandled exceptions, handled
@@ -39,16 +40,18 @@ def init_logging(app):  # pragma: no cover
             # access token for the demo app: https://rollbar.com/demo
             settings.ROLLBAR_API_KEY,
             # environment name
-            settings.ENV,
+            settings.ROLLBAR_ENV,
             # server root directory, makes tracebacks prettier
             root=os.path.dirname(os.path.realpath(__file__)),
             # flask already sets up logging
             allow_logging_basic_config=False
         )
 
+
 def send_message(message, log_level='warning'):  # pragma: no cover
     if settings.ROLLBAR_ENABLED:
         rollbar.report_message(message, log_level)
+
 
 def sys_info(**kwargs):  # pragma: no cover
     if settings.ROLLBAR_ENABLED:

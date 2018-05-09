@@ -121,9 +121,7 @@ def _register_loggers(app):
 
     # if logging enabled and env is test (nosetest/travis) or dev, use old
     # school logging (for production and similar use raven/rollbar)
-    if settings.LOG_ENABLED and settings.ENV in (
-            settings.ENV_DEV, settings.ENV_TEST):
-
+    if settings.LOG_ENABLED and settings.LOCAL_LOGS_ENABLED:
         for some_logger in loggers:
             log_formatter = logging.Formatter(
                 settings.LOGGING_FORMAT, settings.LOGGING_DATE_FORMAT)
