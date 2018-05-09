@@ -49,21 +49,23 @@ class BaseField(object):
 
         self.data = NotSet()
 
-    def get_normal(self, value):
-        return value
+    def confirm_argument_is_of_expected_shape(self, value):
+        """Function checks whether argument value is among expected outcomes.
 
-    def normalise(self, value):
-        if value is None:
-            if self.allow_blank is True:
-                return None
-            else:
-                raise exceptions.InvalidPayloadError(
-                    "None/null is not possible for the field")
-
-        return self.get_normal(value)
+        For example only fields with allow_blank can have None as a value and
+        collection fields probably want iterable.
+        """
+        if value is None and self.allow_blank is False:
+            raise exceptions.InvalidPayloadError(
+                "None/null is not acceptable value for a field")
 
     def populate(self, value):
+        self.confirm_argument_is_of_expected_shape(value)
+
         self.data = self.normalise(value)
+
+    def normalise(self, value):
+        return value
 
     def is_set(self):
         return not isinstance(self.data, NotSet)
@@ -104,13 +106,18 @@ class BaseSchemaField(BaseField):
 
             return field
 
-    def get_normal(self, value):
-        if not isinstance(value, (dict,)):
+    def confirm_argument_is_of_expected_shape(self, value):
+        super().confirm_argument_is_of_expected_shape(value)
+
+        if value is not None and not isinstance(value, (dict,)):
             raise exceptions.InvalidPayloadError(
                 'Schema field can be populated only with dictinary like '
                 'payload (ie. {{"my_value": true}}), got: {}'.format(value))
 
-        return value
+        if not self.fields:
+            raise exceptions.InvalidPayloadError(
+                "Invalid Schema definition, "
+                "attribute fields is empty. Did you ask for empty schema?")
 
     def as_dictionary(self, user=None):
         if not self.is_set():
@@ -128,19 +135,35 @@ class BaseSchemaField(BaseField):
 
 
 class BaseCollectionField(BaseField):
-    subfield = None
+    collection_type = None
 
-    def __init__(self, name, subfield=None, **kwargs):
-        if subfield is not None:
-            self.subfield = subfield
+    def __init__(self, name, collection_type=None, **kwargs):
+        if collection_type is not None:
+            self.collection_type = collection_type
 
         super().__init__(name, **kwargs)
 
+    def confirm_argument_is_of_expected_shape(self, value):
+        super().confirm_argument_is_of_expected_shape(value)
+
+        if value is not None and not isinstance(value, collections.Iterable):
+            raise exceptions.InvalidPayloadError(
+                "Collection field can be populated only with iterable "
+                "payload (ie. list), got: {}".format(value))
+
+        if self.collection_type is None:
+            raise exceptions.InvalidPayloadError(
+                "Invalid Collection definition, "
+                "attribute collection_type not set. I have no idea how "
+                "to populate your collection")
+
     def populate(self, value):
+        self.confirm_argument_is_of_expected_shape(value)
+
         data = []
 
-        for idx, val in enumerate(self.normalise(value)):
-            instance = self.subfield(
+        for idx, val in enumerate(value):
+            instance = self.collection_type(
                 '{} - instance - {}'.format(self.name, idx))
             instance.parent = self
             instance.populate(val)
@@ -148,14 +171,6 @@ class BaseCollectionField(BaseField):
             data.append(instance)
 
         self.data = data
-
-    def get_normal(self, value):
-        if not isinstance(value, collections.Iterable):
-            raise exceptions.InvalidPayloadError(
-                "Collection field can be populated only with iterable "
-                "payload (ie. list), got: {}".format(value))
-
-        return list(value)
 
     def as_dictionary(self, user=None):
         if not self.is_set():
@@ -173,7 +188,7 @@ class BaseCollectionField(BaseField):
 
 
 class BaseBoolField(BaseField):
-    def get_normal(self, value):
+    def normalise(self, value):
         try:
             value = str(value).lower()
 
@@ -192,17 +207,17 @@ class BaseBoolField(BaseField):
 
 
 class BaseDateField(BaseField):
-    def get_normal(self, value):
+    def normalise(self, value):
         return tools.datetime_helpers.parse_into_datetime(value)
 
 
 class BaseStringField(BaseField):
-    def get_normal(self, value):
+    def normalise(self, value):
         return str(value)
 
 
 class BaseIntegerField(BaseField):
-    def get_normal(self, value):
+    def normalise(self, value):
         try:
             return int(value)
         except (TypeError, ValueError):

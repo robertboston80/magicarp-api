@@ -3,22 +3,32 @@ from magicarp.schema import base
 
 
 class BaseOutputField(object):
-    pass
+    def normalise(self, value):
+        try:
+            return super().normalise(value)
+        except exceptions.InvalidPayloadError as err:
+            raise exceptions.ResponseError(err)
+
+    def confirm_argument_is_of_expected_shape(self, value):
+        try:
+            super().confirm_argument_is_of_expected_shape(value)
+        except exceptions.InvalidPayloadError as err:
+            raise exceptions.ResponseError(err)
 
 
 class SchemaField(base.BaseSchemaField, BaseOutputField):
     def populate(self, value):
-        payload = self.normalise(value)
+        self.confirm_argument_is_of_expected_shape(value)
 
         error_invalid_payload = []
 
         for field in self.fields:
-            if field.name not in payload:
+            if field.name not in value:
                 continue
 
             field.parent = self
 
-            sub_payload = payload[field.name]
+            sub_payload = value[field.name]
 
             try:
                 field.populate(sub_payload)
@@ -34,19 +44,9 @@ class SchemaField(base.BaseSchemaField, BaseOutputField):
 
         self.data = self.fields
 
-    def get_normal(self, value):
-        try:
-            return super().get_normal(value)
-        except exceptions.InvalidPayloadError as err:
-            raise exceptions.ResponseError(err)
-
 
 class IntegerField(base.BaseIntegerField, BaseOutputField):
-    def get_normal(self, value):
-        try:
-            return super().get_normal(value)
-        except exceptions.InvalidPayloadError as err:
-            raise exceptions.ResponseError(err)
+    pass
 
 
 class StringField(base.BaseStringField, BaseOutputField):
@@ -58,16 +58,8 @@ class DateField(base.BaseDateField, BaseOutputField):
 
 
 class BoolField(base.BaseBoolField, BaseOutputField):
-    def get_normal(self, value):
-        try:
-            return super().get_normal(value)
-        except exceptions.InvalidPayloadError as err:
-            raise exceptions.ResponseError(err)
+    pass
 
 
 class CollectionField(base.BaseCollectionField, BaseOutputField):
-    def get_normal(self, value):
-        try:
-            return super().get_normal(value)
-        except exceptions.InvalidPayloadError as err:
-            raise exceptions.ResponseError(err)
+    pass
