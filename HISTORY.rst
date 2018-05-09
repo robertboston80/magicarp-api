@@ -1,3 +1,11 @@
+1.0.10 (2018-05-09)
+~~~~~~~~~~~~~~~~~~
+
+Bug Fixes:
+
+* Fix fields on SchemaField (and in some cases on CollectionField) being shared
+  via reference.
+
 1.0.9 (2018-05-04)
 ~~~~~~~~~~~~~~~~~~
 
