@@ -112,9 +112,6 @@ class BaseSchemaField(BaseField):
 
         return value
 
-    def populate(self, value):
-        self.data = self.fields
-
     def as_dictionary(self, user=None):
         if not self.is_set():
             return None

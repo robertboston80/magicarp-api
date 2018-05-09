@@ -150,7 +150,7 @@ class SchemaField(base.BaseSchemaField, BaseInputField):
                 error_invalid_payload=error_invalid_payload
             )
 
-        super().populate(value)
+        self.data = self.fields
 
     def validate(self):
         errors = {}

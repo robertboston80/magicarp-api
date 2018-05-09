@@ -32,7 +32,7 @@ class SchemaField(base.BaseSchemaField, BaseOutputField):
                 error_invalid_payload=error_invalid_payload
             )
 
-        super().populate(value)
+        self.data = self.fields
 
     def get_normal(self, value):
         try:
