@@ -1,0 +1,12 @@
+[run]
+    branch = True
+    parallel = True
+    source = magicarp/
+    omit =
+        magicarp/settings/*.py
+
+[html]
+    directory = cover
+
+[report]
+    include = magicarp/*
