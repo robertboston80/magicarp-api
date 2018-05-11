@@ -1,3 +1,11 @@
+1.0.11 (2018-05-11)
+~~~~~~~~~~~~~~~~~~
+
+Bug Fixes:
+
+* Fix input throwing exception if collection was in use on incomming data.
+  (Regression from change for version 1.0.10)
+
 1.0.10 (2018-05-09)
 ~~~~~~~~~~~~~~~~~~
 
