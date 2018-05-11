@@ -74,10 +74,18 @@ class SchemaField(base.BaseSchemaField, BaseInputField):
                     field.name, field.collect_required_fields())
 
             elif isinstance(field, base.BaseCollectionField) and \
-                    isinstance(field.subfield, base.BaseSchemaField):
+                    isinstance(field.collection_type, base.BaseSchemaField):
+
+                if field.collection_type.is_instance:
+                    instance = field.collection_type.make_new(self)
+                else:
+                    instance = field.collection_type(
+                        '{} - {}'.format(
+                            field.name, field.collection_type), parent=self)
+
                 required += self._prefix_with(
-                    field.name,
-                    field.subfield(field.name).collect_required_fields())
+                    field.name, instance.collect_required_fields())
+
             else:
                 continue
 
@@ -121,7 +129,7 @@ class SchemaField(base.BaseSchemaField, BaseInputField):
         # only that collection has to be list but also that the list has to be
         # of integers
 
-        local_fields = []
+        local_fields = {}
 
         payload = copy.deepcopy(value)
 
@@ -136,11 +144,11 @@ class SchemaField(base.BaseSchemaField, BaseInputField):
                 subpayload = payload.pop(field.name)
 
                 try:
-                    field.populate(subpayload)
+                    local_field.populate(subpayload)
                 except exceptions.InvalidPayloadError as err:
                     error_invalid_payload.append((field.name, str(err)))
 
-            local_fields.append(local_field)
+            local_fields[local_field.name] = local_field
 
         if payload and settings.EXCEPTION_ON_UNRECOGNISED_INPUT:
             error_invalid_payload.append((
@@ -159,7 +167,7 @@ class SchemaField(base.BaseSchemaField, BaseInputField):
     def validate(self):
         errors = {}
 
-        for field in self.fields:
+        for name, field in self.data.items():
             if not field.is_set():
                 continue
 
@@ -167,14 +175,13 @@ class SchemaField(base.BaseSchemaField, BaseInputField):
                 field.validate()
             except exceptions.BaseValidationError as err:
                 if field.name not in errors:
-                    errors[field.name] = []
+                    errors[name] = []
 
-                errors[field.name].append(str(err))
+                errors[name].append(str(err))
 
         for field_names, validator, message in self.schema_validators:
             fields = [
-                self.get_field_by_name(field_name)
-                for field_name in field_names
+                self.data[name] for name in field_names
             ]
 
             is_valid = validator(*fields)
