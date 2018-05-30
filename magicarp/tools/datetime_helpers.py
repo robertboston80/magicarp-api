@@ -34,7 +34,8 @@ def parse_into_datetime(value, timezone=None):
         raise ValueError(
             "Object needs to be non-empty in order to parse it as a date")
 
-    date_obj = date_parser.parse(value)
+    if not hasattr(value, 'tzinfo') or not hasattr(value, 'astimezone'):
+        date_obj = date_parser.parse(str(value))
 
     return _fix_timezone(date_obj, timezone)
 
