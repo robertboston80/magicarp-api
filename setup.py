@@ -10,8 +10,8 @@ setup(
     name='magicarp-api',
     version='1.1.0',
     description=(
-        'Magicarp-Api if flask based, micro-framework that allows to '
-        'build functional api from get-go'
+        'Magicarp-Api is an extension to flask micro-framework that allows '
+        'developer to build functional restful-api from get-go'
     ),
     long_description=readme(),
     classifiers=[
