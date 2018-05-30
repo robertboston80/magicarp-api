@@ -1,18 +1,26 @@
+1.1.0 (2018-05-11)
+~~~~~~~~~~~~~~~~~~
+
+New Features:
+
+ * Add DateField and TimeField to existing fields on schema input/output
+ * Make date parsing more robust by assuming duck-typing
+
 1.0.11 (2018-05-11)
 ~~~~~~~~~~~~~~~~~~
 
 Bug Fixes:
 
-* Fix input throwing exception if collection was in use on incomming data.
-  (Regression from change for version 1.0.10)
+ * Fix input throwing exception if collection was in use on incomming data.
+   (Regression from change for version 1.0.10)
 
 1.0.10 (2018-05-09)
 ~~~~~~~~~~~~~~~~~~
 
 Bug Fixes:
 
-* Fix fields on SchemaField (and in some cases on CollectionField) being shared
-  via reference.
+ * Fix fields on SchemaField (and in some cases on CollectionField) being shared
+   via reference.
 
 1.0.9 (2018-05-04)
 ~~~~~~~~~~~~~~~~~~
