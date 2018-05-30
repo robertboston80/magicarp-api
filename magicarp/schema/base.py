@@ -236,9 +236,19 @@ class BaseBoolField(BaseField):
             )
 
 
-class BaseDateField(BaseField):
+class BaseDateTimeField(BaseField):
     def normalise(self, value):
         return tools.datetime_helpers.parse_into_datetime(value)
+
+
+class BaseDateField(BaseField):
+    def normalise(self, value):
+        return value
+
+
+class BaseTimeField(BaseField):
+    def normalise(self, value):
+        return value
 
 
 class BaseStringField(BaseField):

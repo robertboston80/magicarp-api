@@ -207,7 +207,15 @@ class StringField(base.BaseStringField, BaseInputField):
     pass
 
 
+class DateTimeField(base.BaseDateField, BaseInputField):
+    pass
+
+
 class DateField(base.BaseDateField, BaseInputField):
+    pass
+
+
+class TimeField(base.BaseDateField, BaseInputField):
     pass
 
 

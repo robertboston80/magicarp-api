@@ -53,7 +53,15 @@ class StringField(base.BaseStringField, BaseOutputField):
     pass
 
 
+class DateTimeField(base.BaseDateTimeField, BaseOutputField):
+    pass
+
+
 class DateField(base.BaseDateField, BaseOutputField):
+    pass
+
+
+class TimeField(base.BaseTimeField, BaseOutputField):
     pass
 
 
