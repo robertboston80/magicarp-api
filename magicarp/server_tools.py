@@ -13,10 +13,7 @@ def create_app(
         register_extra_error_handlers=None, register_common_routes=True):
     app = flask.Flask(settings.APP_NAME)
 
-    app.config.update(
-        DEBUG=settings.DEBUG,
-        TESTING=settings.TESTING,
-    )
+    app.config.from_object('magicarp.settings.flask_defaults')
 
     if before_set_up:
         before_set_up(app)

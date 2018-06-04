@@ -3,8 +3,15 @@ import logging
 
 APP_NAME = 'magicarp'
 
+# allows to override flask's settings
+FLASK_CONFIG = None
+
 DEBUG = False
 TESTING = False
+
+FLASK_ENV = 'development'
+
+SECRET_KEY = None
 
 TEST_USER_ENABLED = False
 
