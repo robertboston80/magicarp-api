@@ -243,12 +243,12 @@ class BaseDateTimeField(BaseField):
 
 class BaseDateField(BaseField):
     def normalise(self, value):
-        return value
+        return tools.datetime_helpers.parse_into_date(value)
 
 
 class BaseTimeField(BaseField):
     def normalise(self, value):
-        return value
+        return tools.datetime_helpers.parse_into_time(value)
 
 
 class BaseStringField(BaseField):
