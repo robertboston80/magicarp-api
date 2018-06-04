@@ -213,6 +213,8 @@ def to_json(payload):
                 ['name': 'john', 'age': 23}
 
             but will cause exception in any other case
+
+        TODO: change the name of this function to be less misleading
     """
     flat_tree = _flatten_payload(payload)
 
