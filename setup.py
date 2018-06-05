@@ -29,7 +29,7 @@ setup(
     author_email="drachu@gmail.com",
     license="MIT",
     install_requires=[
-        'Flask>=0.12',
+        'Flask>=1.0',
         'simple-settings>=0.13',
         'python-dateutil>=2.6',
         'pytz>=2018.4',
