@@ -10,8 +10,8 @@ from . import schema  # NOQA
 from . import response  # NOQA
 from . import endpoint  # NOQA
 
-from . import server_tools  # NOQA
+from . import server_factory  # NOQA
 
-from . import common # NOQA
+from . import common  # NOQA
 
 routing = router.Router()
