@@ -39,6 +39,8 @@ class ShutDown(endpoint.BaseEndpoint):
     url = '/shutdown'
     name = 'shutdown'
 
+    methods = ['POST']
+
     def action(self):  # pylint: disable=arguments-differ
         func = request.environ.get('werkzeug.server.shutdown')
 
