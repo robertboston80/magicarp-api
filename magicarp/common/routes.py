@@ -1,3 +1,5 @@
+import os
+
 from flask import request
 
 from magicarp import router, endpoint
@@ -30,8 +32,32 @@ class UrlMap(endpoint.BaseEndpoint):
         return func_list
 
 
+class ShutDown(endpoint.BaseEndpoint):
+    """ShutDown rouote, that terminates the server, expose it only for
+    development and testing environment, unless you like server restarts.
+    """
+    url = '/shutdown'
+    name = 'shutdown'
+
+    def action(self):  # pylint: disable=arguments-differ
+        func = request.environ.get('werkzeug.server.shutdown')
+
+        if func is None:
+            raise RuntimeError('Not running with the Werkzeug Server')
+
+        func()
+
+        return
+
+
+routes = [
+    Ping(),
+    UrlMap(),
+]
+
+
+if os.environ.get("FLASK_ENV") == 'development':
+    routes.append(ShutDown())
+
 blueprint = router.Blueprint(
-    __name__, namespace="/", routes=[
-        Ping(),
-        UrlMap(),
-    ])
+    __name__, namespace="/", routes=routes)
