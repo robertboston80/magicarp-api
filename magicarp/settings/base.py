@@ -39,3 +39,6 @@ LOGGING_FORMAT = "[%(asctime)s] %(message)s"
 LOGGING_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 LOG_PATH = os.path.join(BASE_LOCATION, 'logs', 'api.log')
 LOG_LEVEL = logging.WARNING
+
+FLASK_SERVER_HOST = '0.0.0.0'
+FLASK_SERVER_PORT = 5000
