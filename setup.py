@@ -8,7 +8,7 @@ def readme():
 
 setup(
     name='magicarp-api',
-    version='1.1.0',
+    version='1.2.0',
     description=(
         'Magicarp-Api is an extension to flask micro-framework that allows '
         'developer to build functional restful-api from get-go'
@@ -31,7 +31,7 @@ setup(
     install_requires=[
         'Flask>=1.0',
         'simple-settings>=0.13',
-        'python-dateutil>=2.6',
+        'python-dateutil>=2.7',
         'pytz>=2018.4',
         'url2vapi>=1.2',
         'validators>=0.12',

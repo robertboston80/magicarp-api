@@ -1,4 +1,24 @@
-1.1.0 (2018-05-11)
+1.2.0 (2018-06-07)
+~~~~~~~~~~~~~~~~~~
+
+New Features:
+
+ * TimeField accepts many different formats: ie. 12m 15h or 12:00:30
+ * Add common endpoint '/shutdown' it terminates server, is only available for
+   development and it's primary use is in test cases
+ * Add a way to override flask settings (not all of them yet, but it's trivial
+   to add missing ones)
+ * Bump version of flask to 1.0+
+ * New flask allows starting app by pointing to app factory, this allows to
+   drop unneeded file server.py
+ * Add a way to override port and host when starting dev server
+
+Bug Fixes:
+
+ * DateField is correctly validated
+
+
+1.1.0 (2018-05-30)
 ~~~~~~~~~~~~~~~~~~
 
 New Features:
