@@ -1,3 +1,4 @@
+import datetime
 import functools
 
 # pylint: disable=unused-import
@@ -8,7 +9,7 @@ from validators import (  # NOQA
 
 from magicarp import exceptions
 
-from . import datetime_helpers as datetime
+from . import datetime_helpers
 
 
 def validate_is_not_none(*args, **kwargs):
@@ -94,7 +95,12 @@ class IsInFuture(BaseValidator):
         """Validator works under assumption that value is valid datetime
         object.
         """
-        return truthy(value > datetime.get_current_datetime())
+        now = datetime_helpers.get_current_server_time()
+
+        if isinstance(value, datetime.date):
+            now = now.date()
+
+        return truthy(value > now)
 
     @property
     def default_message(self):
