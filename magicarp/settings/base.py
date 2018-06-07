@@ -42,3 +42,15 @@ LOG_LEVEL = logging.WARNING
 
 FLASK_SERVER_HOST = '0.0.0.0'
 FLASK_SERVER_PORT = 5000
+
+# if you want to have capability of assigning custom error codes that are
+# stable, populate this dictionary with keys that are strings and values that
+# are unique numeric values
+# ie.
+# ERROR_CODEBOOK_ATTRIBUTES = {
+#   'user': 1,
+#   'address': 2,
+#   and etc...
+# }
+ERROR_CODEBOOK_ATTRIBUTES = {}
+ERROR_CODEBOOK_SCHEMA = {}

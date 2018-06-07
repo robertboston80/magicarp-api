@@ -1,6 +1,5 @@
 # keep imports one per line as order makes difference
 
-from . import error_codes  # NOQA
 from . import exceptions  # NOQA
 
 from . import router  # NOQA

@@ -3,7 +3,7 @@ import re
 from flask import json, current_app, request
 from simple_settings import settings
 
-from magicarp import exceptions, error_codes
+from magicarp import exceptions
 
 
 class JsonEncoder(json.JSONEncoder):
@@ -231,23 +231,18 @@ def to_json(payload):
 
 
 def make_error_code(attribute, schema):
-    if attribute not in error_codes.ATTR_CODES.keys():
-        current_app.logger.info(
-            "ERROR CODE could not be generated. "
-            "Attribute '%s' not found in ATTR_CODES!", attribute)
-        attr_code = 0
-    else:
-        attr_code = error_codes.ATTR_CODES[attribute]
+    attr_code = settings.ERROR_CODEBOOK_ATTRIBUTES.get(attribute, None)
+    schema_code = settings.ERROR_CODEBOOK_SCHEMA.get(schema, None)
 
-    if schema not in error_codes.SCHEMA_CODES.keys():
+    if attr_code is None or schema_code is None:
         current_app.logger.info(
-            "ERROR CODE could not be generated. "
-            "Schema '%s' not found in SCHEMA_CODES!", schema)
-        schema_code = 0
-    else:
-        schema_code = error_codes.SCHEMA_CODES[schema]
+            "Error code could not be generated. "
+            "Attr code: %s or Schma code: %s, is None", attr_code, schema_code)
 
-    return "{}-{}".format(attr_code, schema_code)
+        attr_code = -1
+        schema_code = -1
+
+    return "{}::{}".format(attr_code, schema_code)
 
 
 def build_tree(list_of_strings):
