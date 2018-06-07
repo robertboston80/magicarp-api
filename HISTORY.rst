@@ -1,3 +1,11 @@
+1.3.0 (2018-06-XX)
+~~~~~~~~~~~~~~~~~~
+
+New Features:
+
+ * input/output fields on schema that allow blanks will return None if None was
+   provided (with possibly default to be set for such cases in the future)
+
 1.2.0 (2018-06-07)
 ~~~~~~~~~~~~~~~~~~
 

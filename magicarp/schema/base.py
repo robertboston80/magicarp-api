@@ -23,22 +23,24 @@ class BaseField(object):
 
             name :: the only mandatory field, it basically tells how the field
                 in question should be called, also it tells a schema to look
-                for this name in comming payload, used as well for generation
+                for this name in coming payload, used as well for generation
                 of error codes
 
             description :: human readable description of the field, used for
                 auto generated api doc
 
-            validataors :: list of validators that should be applied, currently
+            validators :: list of validators that should be applied, currently
                 only data provided by the user is being validated, data prior
                 to being validated is normalised towards certain values (for
                 example boolean fields are either True or False, so validation
                 is spared of type checking - with possible exception of
                 handling None)
 
-            allow_blank :: if given field allows None as input data, this can
-                be handled via validator but for certain systems null values
-                are impossible and in such cases it's not a validation error
+            allow_blank :: if given field allows None as data, this could
+                be handled via validator (and still can be on top of that)
+                but for certain systems null values are impossible (think of
+                integer field receiving string value) and for such cases it's
+                not a validation error it is payload error
 
             parent :: if object is part of bigger tree we can set a parent to
             it (helps with traversing)
@@ -75,7 +77,7 @@ class BaseField(object):
     def populate(self, value):
         self.confirm_argument_is_of_expected_shape(value)
 
-        self.data = self.normalise(value)
+        self.data = None if value is None else self.normalise(value)
 
     def normalise(self, value):
         return value
