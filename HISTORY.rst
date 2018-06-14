@@ -8,6 +8,7 @@ New Features:
  * automated error codes for incomming data validation are possible to override,
    change ERROR_CODEBOOK_ATTRIBUTES and ERROR_CODEBOOK_SCHEMA in your local
    settings
+ * add blinker as dependency this will allow to add custom signals at will
 
 1.2.0 (2018-06-07)
 ~~~~~~~~~~~~~~~~~~

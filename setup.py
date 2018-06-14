@@ -30,6 +30,7 @@ setup(
     license="MIT",
     install_requires=[
         'Flask>=1.0',
+        'blinker>=1.4',
         'simple-settings>=0.13',
         'python-dateutil>=2.7',
         'pytz>=2018.4',
