@@ -1,8 +1,8 @@
 import os
 
-from flask import request
+from flask import request, current_app
 
-from magicarp import router, endpoint
+from magicarp import router, endpoint, signals
 from . import logic
 
 
@@ -46,6 +46,10 @@ class ShutDown(endpoint.BaseEndpoint):
 
         if func is None:
             raise RuntimeError('Not running with the Werkzeug Server')
+
+        # pylint: disable=protected-access
+        signals.app_shutdown.send(current_app._get_current_object())
+        # pylint: enable=protected-access
 
         func()
 

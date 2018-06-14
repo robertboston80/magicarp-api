@@ -12,5 +12,6 @@ from . import endpoint  # NOQA
 from . import server_factory  # NOQA
 
 from . import common  # NOQA
+from . import signals  # NOQA
 
 routing = router.Router()

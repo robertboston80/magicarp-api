@@ -9,6 +9,10 @@ New Features:
    change ERROR_CODEBOOK_ATTRIBUTES and ERROR_CODEBOOK_SCHEMA in your local
    settings
  * add blinker as dependency this will allow to add custom signals at will
+ * create builtin signals that will allow extension to magicarp to hook to
+   certain events
+ * first builtin signal was created, it's name is 'shutdown' that is being
+   triggered only in development mode when shutdown request is being received
 
 Breaking Compatibility Changes:
 
