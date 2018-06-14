@@ -5,10 +5,15 @@ New Features:
 
  * input/output fields on schema that allow blanks will return None if None was
    provided (with possibly default to be set for such cases in the future)
- * automated error codes for incomming data validation are possible to override,
+ * automated error codes for incoming data validation are possible to override,
    change ERROR_CODEBOOK_ATTRIBUTES and ERROR_CODEBOOK_SCHEMA in your local
    settings
  * add blinker as dependency this will allow to add custom signals at will
+
+Breaking Compatibility Changes:
+
+ * hooks on magicarp server_factory has been changed from 'before_set_up' to
+   'before_setup' and 'set_up' into 'setup'
 
 1.2.0 (2018-06-07)
 ~~~~~~~~~~~~~~~~~~

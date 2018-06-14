@@ -8,20 +8,20 @@ from . import exceptions, tools, response
 
 
 def create_app(
-        before_set_up=None, set_up=None, register_error_handlers=None,
+        before_setup=None, setup=None, register_error_handlers=None,
         register_loggers=None, before_routes=None, after_routes=None,
         register_extra_error_handlers=None, register_common_routes=True):
     app = flask.Flask(settings.APP_NAME)
 
     app.config.from_object('magicarp.settings.flask_defaults')
 
-    if before_set_up:
-        before_set_up(app)
+    if before_setup:
+        before_setup(app)
 
-    if set_up:
-        set_up(app)
+    if setup:
+        setup(app)
     else:
-        _set_up(app)
+        _setup(app)
 
     if register_error_handlers:
         register_error_handlers(app)
@@ -130,7 +130,7 @@ def _register_loggers(app):
             some_logger.addHandler(log_handler)
 
 
-def _set_up(app):
+def _setup(app):
     """Hooks for actions performed before each request.
     """
     @app.before_first_request
