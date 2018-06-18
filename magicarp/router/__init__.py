@@ -83,6 +83,9 @@ class Url(object):
         self.url += part
 
     def as_full_url(self):
+        if self.url.endswith('/favicon.ico/'):
+            return self.url[:-1]
+
         if self.url.endswith('/'):
             return self.url
 
