@@ -13,6 +13,9 @@ New Features:
    certain events
  * first builtin signal was created, it's name is 'shutdown' that is being
    triggered only in development mode when shutdown request is being received
+ * add dynamic implementation of persistent storage
+ * add example implementation of /auth endpoint
+ * add favicon to common endpoints
 
 Breaking Compatibility Changes:
 
