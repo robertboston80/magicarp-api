@@ -98,4 +98,7 @@ class BaseEndpoint(object):
             result = expected_response
 
         # this will trick to run callable as function and not method
-        return self.response.__func__(result)
+        if self.response:
+            return self.response.__func__(result)
+
+        return result
