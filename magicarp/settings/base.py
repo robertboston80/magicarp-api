@@ -32,6 +32,26 @@ BASE_LOCATION = os.path.abspath(
 
 CACHE_ENGINE = 'dummy'
 
+
+def get_redis_engine():
+    from magicarp.storage import redis_engine
+
+    return redis_engine
+
+
+def get_dummy_engine():
+    from magicarp.storage import dummy_engine
+
+    return dummy_engine
+
+
+STORAGE_SETTINGS = {}
+STORAGE_ENGINE = 'dummy'
+STORAGE_ENGINES = {
+    'redis': get_redis_engine,
+    'dummy': get_dummy_engine,
+}
+
 LOCAL_LOGS_ENABLED = True
 LOG_ENABLED = True
 

@@ -8,9 +8,9 @@ be separated to own namespace.
 """
 
 # first import all the modules that do not have any other dependency
-from . import datetime_helpers, api_request, logging, auth_model, cache
+from . import datetime_helpers, api_request, logging, auth_model  # NOQA
 
 # then all others that are actually dependening on other modules
-from . import helpers
-from . import auth
-from . import validators
+from . import helpers  # NOQA
+from . import auth  # NOQA
+from . import validators  # NOQA
