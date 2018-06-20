@@ -1,6 +1,10 @@
 import os
 import logging
 
+from . import favicon
+
+FAVICON_CONTENT = favicon.__doc__
+
 APP_NAME = 'magicarp'
 
 # allows to override flask's settings
@@ -13,7 +17,11 @@ FLASK_ENV = 'development'
 
 SECRET_KEY = None
 
+ROUTING_ADD_COMMON = True
+ROUTING_ADD_AUTH = True
+
 TEST_USER_ENABLED = False
+TEST_USER = None
 
 # if you have one backend for multiple api's, change namespace to avoid user
 # session collision
