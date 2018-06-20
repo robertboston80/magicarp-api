@@ -12,5 +12,4 @@ from . import datetime_helpers, api_request, logging, auth_model  # NOQA
 
 # then all others that are actually dependening on other modules
 from . import helpers  # NOQA
-from . import auth  # NOQA
 from . import validators  # NOQA
