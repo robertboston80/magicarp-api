@@ -1,3 +1,4 @@
+import base64
 import os
 
 from flask import request, current_app, make_response
@@ -59,7 +60,7 @@ class ShutDown(endpoint.BaseEndpoint):
 
 
 class FavIcon(endpoint.BaseEndpoint):
-    """Favicon, to prevent 500 when accessing api from a browser.
+    """Favicon, to prevent 500 when other favicons are unavailable.
     """
     url = '/favicon.ico'
     name = 'favicon'
@@ -67,7 +68,6 @@ class FavIcon(endpoint.BaseEndpoint):
     response = None
 
     def action(self):  # pylint: disable=arguments-differ
-        import base64
         resp = make_response(base64.b64decode(settings.FAVICON_CONTENT))
 
         resp.headers['content-type'] = 'image/vnd.microsoft.icon'
