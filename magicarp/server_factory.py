@@ -7,21 +7,28 @@ from simple_settings import settings
 from . import exceptions, tools, response
 
 
+# pylint: disable=too-many-branches
 def create_app(
-        before_setup=None, setup=None, register_error_handlers=None,
-        register_loggers=None, before_routes=None, after_routes=None,
-        register_extra_error_handlers=None, register_common_routes=True):
+        first_setup=None, setup=None, register_error_handlers=None,
+        register_loggers=None, before_routes=None, final_setup=None,
+        register_extra_error_handlers=None, register_auth=None,
+        register_routes=None, get_user_from_request=None):
     app = flask.Flask(settings.APP_NAME)
 
     app.config.from_object('magicarp.settings.flask_defaults')
 
-    if before_setup:
-        before_setup(app)
+    if first_setup:
+        first_setup(app)
 
     if setup:
         setup(app)
     else:
         _setup(app)
+
+    if register_auth:
+        register_auth(app, flask.request)
+    else:
+        _register_auth(app, get_user_from_request)
 
     if register_error_handlers:
         register_error_handlers(app)
@@ -39,12 +46,16 @@ def create_app(
     if before_routes:
         before_routes(app)
 
-    register_routes(app, register_common_routes)
+    if register_routes:
+        register_routes(app)
+    else:
+        _register_routes(app)
 
-    if after_routes:
-        after_routes(app)
+    if final_setup:
+        final_setup(app)
 
     return app
+# pylint: enable=too-many-branches
 
 
 def _register_error_handlers(app):
@@ -109,6 +120,18 @@ def _register_error_handlers(app):
 
         return response.error_response(err, 500)
 
+    # NOTE: add inactive version handling?
+    # except exc.InactiveAPIVersion as err:
+    #     return tools.responses.error_response(
+    #       'Inactive API version', 404), ''
+    # NOTE2: or perhaps method not implemented?
+    # except exc.MethodNotImplemented as err:  # pragma: no cover
+    #     # Note: 501 = Not Implemented
+    #     response = tools.responses.error_response(err, 501)
+    # except exc.MethodNotAllowed as err:
+    #     return tools.responses.error_response(
+    #         'Method {} not allowed for this request'.format(), 405),
+
 
 def _register_loggers(app):
     # add any other logger that may or may not exist in here
@@ -130,6 +153,20 @@ def _register_loggers(app):
             some_logger.addHandler(log_handler)
 
 
+def _register_auth(app, get_user_from_request):
+    """Example how auth of user works, this one works with built-in auth
+    namespace, override it to whatever auth endpoint is being used
+    """
+    if get_user_from_request is None:
+        from magicarp.common import logic
+
+        get_user_from_request = logic.retrieve_user_from_request
+
+    @app.before_request
+    def user_auth():  # pylint: disable=unused-variable
+        flask.request.user = get_user_from_request(flask.request)
+
+
 def _setup(app):
     """Hooks for actions performed before each request.
     """
@@ -138,27 +175,9 @@ def _setup(app):
         """This is only an example, rollbar is not hardcoded at all"""
         tools.logging.init_logging(app)
 
-    @app.before_request
-    def before_request():  # pylint: disable=unused-variable
-        """If there is anything that api should do before standard request
-        processing add it in here. Caveat if this function returns anything
-        standard view processing will be prevented.
-        """
-        user = tools.auth.retrieve_user_from_headers(flask.request.headers)
-
-        # NOTE: add inactive version handling?
-        # except exc.InactiveAPIVersion as err:
-        #     return tools.responses.error_response(
-        #       'Inactive API version', 404), ''
-        # NOTE2: or perhaps method not implemented?
-        # except exc.MethodNotImplemented as err:  # pragma: no cover
-        #     # Note: 501 = Not Implemented
-        #     response = tools.responses.error_response(err, 501)
-        # except exc.MethodNotAllowed as err:
-        #     return tools.responses.error_response(
-        #         'Method {} not allowed for this request'.format(), 405),
-
-        flask.request.user = user
+    # @app.before_request
+    # def example_preprocessor():  # pylint: disable=unused-variable
+    #     pass
 
     @app.after_request
     def after_request(resp):  # pylint: disable=unused-variable
@@ -181,15 +200,22 @@ def _setup(app):
     app.request_class = tools.api_request.ApiRequest
 
 
-def register_routes(app, register_common_routes):
+def _register_routes(app):
     from magicarp import routing
 
-    if register_common_routes:
-        from magicarp import common
+    common_blueprints = []
 
-        routing.register_version(None, [
-            common.routes.blueprint,
-        ])
+    if settings.ROUTING_ADD_AUTH:
+        from magicarp.common.routes import auth_route
+
+        common_blueprints.append(auth_route.blueprint)
+
+    if settings.ROUTING_ADD_COMMON:
+        from magicarp.common import routes
+
+        common_blueprints.append(routes.blueprint)
+
+    routing.register_version(None, common_blueprints)
 
     # from now on every attempt to register or de-register version will cause
     # exception
