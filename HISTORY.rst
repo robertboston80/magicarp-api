@@ -1,4 +1,4 @@
-1.3.0 (2018-06-XX)
+1.3.0 (2018-06-20)
 ~~~~~~~~~~~~~~~~~~
 
 New Features:
@@ -8,19 +8,23 @@ New Features:
  * automated error codes for incoming data validation are possible to override,
    change ERROR_CODEBOOK_ATTRIBUTES and ERROR_CODEBOOK_SCHEMA in your local
    settings
- * add blinker as dependency this will allow to add custom signals at will
- * create builtin signals that will allow extension to magicarp to hook to
-   certain events
- * first builtin signal was created, it's name is 'shutdown' that is being
-   triggered only in development mode when shutdown request is being received
- * add dynamic implementation of persistent storage
+ * add blinker as dependency to allow adding custom signals
+ * create signals module that will allow emitting signals from magicarp
+ * first magicarp signal is emitted, it's name is 'shutdown', is being
+   send only in development mode when shutdown request was received
+ * add implementation of persistent storage
  * add example implementation of /auth endpoint
  * add favicon to common endpoints
+ * add a way to override authentication
+ * add a way to override registering routes
 
 Breaking Compatibility Changes:
 
  * hooks on magicarp server_factory has been changed from 'before_set_up' to
    'before_setup' and 'set_up' into 'setup'
+ * renamed two functions on server factory to be slightly clearer, one went
+   from 'before_setup' to 'first_setup' and the other changed from
+   'after_setup' to 'final_setup'
 
 1.2.0 (2018-06-07)
 ~~~~~~~~~~~~~~~~~~
@@ -98,7 +102,7 @@ Version bump to force cache flush
 New Features:
 
 * Common routes can be easily turned off
-* Rename common subpackages/routes to be easily identifiable as non-core parts
+* Rename common sub-packages/routes to be easily identifiable as non-core parts
 
 1.0.4 (2018-05-01)
 ~~~~~~~~~~~~~~~~~~
