@@ -1,9 +1,11 @@
 import os
 
-from flask import request, current_app
+from flask import request, current_app, make_response
+from simple_settings import settings
 
 from magicarp import router, endpoint, signals
-from . import logic
+
+from magicarp.common import logic
 
 
 class Ping(endpoint.BaseEndpoint):
@@ -15,9 +17,9 @@ class Ping(endpoint.BaseEndpoint):
     name = 'ping'
 
     def action(self):  # pylint: disable=arguments-differ
-        response = logic.get_pong(request.version)
+        resp = logic.get_pong(request.version)
 
-        return response
+        return resp
 
 
 class UrlMap(endpoint.BaseEndpoint):
@@ -56,9 +58,27 @@ class ShutDown(endpoint.BaseEndpoint):
         return
 
 
+class FavIcon(endpoint.BaseEndpoint):
+    """Favicon, to prevent 500 when accessing api from a browser.
+    """
+    url = '/favicon.ico'
+    name = 'favicon'
+
+    response = None
+
+    def action(self):  # pylint: disable=arguments-differ
+        import base64
+        resp = make_response(base64.b64decode(settings.FAVICON_CONTENT))
+
+        resp.headers['content-type'] = 'image/vnd.microsoft.icon'
+
+        return resp, 200
+
+
 routes = [
     Ping(),
     UrlMap(),
+    FavIcon(),
 ]
 
 
