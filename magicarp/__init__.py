@@ -15,4 +15,6 @@ from . import server_factory  # NOQA
 from . import common  # NOQA
 from . import signals  # NOQA
 
+from . import plugins  # NOQA
+
 routing = router.Router()

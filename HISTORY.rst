@@ -1,3 +1,20 @@
+1.4.0 (2018-07-XX)
+~~~~~~~~~~~~~~~~~~
+
+New Features:
+
+ * logging module follows implementation provided by flask, there are three
+   variables on settings LOGGING, LOGGING_ADDITIONAL_HANDLERS and
+   LOGGING_ADDITIONAL_LOGGERS, first one defines logging for the whole magicarp
+   (there is `root` and `magicarp` as a base for logging), while
+   LOGGING_ADDITIONAL_* allows to add loggers and/or handlers on top of that
+
+Breaking Compatibility Changes:
+
+ * logging was re-modeled and as such previous configuration won't work and
+   will be ignored
+
+
 1.3.0 (2018-06-20)
 ~~~~~~~~~~~~~~~~~~
 
@@ -25,6 +42,7 @@ Breaking Compatibility Changes:
  * renamed two functions on server factory to be slightly clearer, one went
    from 'before_setup' to 'first_setup' and the other changed from
    'after_setup' to 'final_setup'
+
 
 1.2.0 (2018-06-07)
 ~~~~~~~~~~~~~~~~~~

@@ -30,14 +30,6 @@ SESSION_NAMESPACE = 'magicarp'
 DEFAULT_LANGUAGE_CODE = 'en_GB'
 DATE_TIMEZONE = 'UTC'
 
-# leave None if you don't want to use rollbar
-ROLLBAR_API_KEY = None
-ROLLBAR_ENABLED = False
-ROLLBAR_ENV = 'dev'
-
-BASE_LOCATION = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '..', '..'))
-
 CACHE_ENGINE = 'dummy'
 
 
@@ -60,13 +52,59 @@ STORAGE_ENGINES = {
     'dummy': get_dummy_engine,
 }
 
-LOCAL_LOGS_ENABLED = True
-LOG_ENABLED = True
+# if you want to integrate leave None if you don't want to use rollbar
+# ROLLBAR_API_KEY = None
+# ROLLBAR_ENV = 'dev'
 
-LOGGING_FORMAT = "[%(asctime)s] %(message)s"
-LOGGING_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
-LOG_PATH = os.path.join(BASE_LOCATION, 'logs', 'api.log')
-LOG_LEVEL = logging.WARNING
+# logging is handled by standard `python` logging module, hence this
+# dictionary, it is used by logging.config.dictConfig on app start-up,
+# after that there is possibility to register new handlers with any number of
+# existing loggers, for more complex solution, providing function
+# `register_loggers` to `create_app` in module `server_factory` is recommended
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'standard': {
+            'class': 'logging.Formatter',
+            'format': '%(asctime)s %(levelname)s %(name)s %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+    },
+
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'INFO',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'magicarp': {
+            'handlers': ['console'],
+        },
+    },
+    'root': {
+        'level': 'DEBUG',
+        'handlers': ['console'],
+    },
+}
+
+
+# if you want to register additional handlers for loging as defined in LOGGING
+# dict, override LOGGING_ADDITIONAL_HANDLERS with list of callables that
+# take no arguments and return instance of handler, ie.
+# LOGGING_ADDITIONAL_HANDLERS = [lambda: SMTPHandler()]
+LOGGING_ADDITIONAL_HANDLERS = ()
+
+# if you want to attach extra handlers defined in LOGGING_ADDITIONAL_HANDLERS, 
+# override LOGGING_ADDITIONAL_LOGGERS with list of strings, where each of them
+# defines logger that should have handler added, ie. sqlalchemy, note:
+# 'app.logger' is standard flask logger that will defined after
+# logging.config.dictConfig
+LOGGING_ADDITIONAL_LOGGERS = (
+    'app.logger',
+)
 
 FLASK_SERVER_HOST = '0.0.0.0'
 FLASK_SERVER_PORT = 5000

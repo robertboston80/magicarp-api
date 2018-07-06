@@ -2,9 +2,11 @@ import logging
 
 import flask
 
+from flask.logging import default_handler
+
 from simple_settings import settings
 
-from . import exceptions, tools, response
+from . import exceptions, tools, response, plugins
 
 
 # pylint: disable=too-many-branches
@@ -19,6 +21,13 @@ def create_app(
 
     if first_setup:
         first_setup(app)
+
+    app.logger.removeHandler(default_handler)
+
+    if register_loggers:
+        register_loggers(app)
+    else:
+        _register_loggers(app)
 
     if setup:
         setup(app)
@@ -37,11 +46,6 @@ def create_app(
 
     if register_extra_error_handlers:
         register_extra_error_handlers(app)
-
-    if register_loggers:
-        register_loggers(app)
-    else:
-        _register_loggers(app)
 
     if before_routes:
         before_routes(app)
@@ -134,23 +138,19 @@ def _register_error_handlers(app):
 
 
 def _register_loggers(app):
-    # add any other logger that may or may not exist in here
-    loggers = [
-        app.logger,
-    ]
+    logging.config.dictConfig(settings.LOGGING)
 
-    # if logging enabled and env is test (nosetest/travis) or dev, use old
-    # school logging (for production and similar use raven/rollbar)
-    if settings.LOG_ENABLED and settings.LOCAL_LOGS_ENABLED:
-        for some_logger in loggers:
-            log_formatter = logging.Formatter(
-                settings.LOGGING_FORMAT, settings.LOGGING_DATE_FORMAT)
-            log_handler = logging.handlers.TimedRotatingFileHandler(
-                filename=settings.LOG_PATH, when="midnight")
-            log_handler.setFormatter(log_formatter)
-            log_handler.setLevel(settings.LOG_LEVEL)
+    if settings.LOGGING_ADDITIONAL_HANDLERS:
+        handlers = [
+            get_handler()
+            for get_handler in settings.LOGGING_ADDITIONAL_HANDLERS]
+        loggers = [
+            app.loger if name == 'app.logger' else logging.getLogger(name)
+            for name in settings.LOGGING_ADDITIONAL_LOGGERS]
 
-            some_logger.addHandler(log_handler)
+        for logger in loggers:
+            for handler in handlers:
+                logger.addHandler(handler)
 
 
 def _register_auth(app, get_user_from_request):
@@ -170,10 +170,13 @@ def _register_auth(app, get_user_from_request):
 def _setup(app):
     """Hooks for actions performed before each request.
     """
-    @app.before_first_request
-    def init_rollbar():  # pylint: disable=unused-variable
-        """This is only an example, rollbar is not hardcoded at all"""
-        tools.logging.init_logging(app)
+    if settings.ROLLBAR_API_KEY:
+        @app.before_first_request
+        def init_rollbar():  # pylint: disable=unused-variable
+            """If rollbar is not installed but ROLLBAR_API_KEY is set, there
+            will be an exception
+            """
+            plugins.rollbar.init(app)
 
     # @app.before_request
     # def example_preprocessor():  # pylint: disable=unused-variable
