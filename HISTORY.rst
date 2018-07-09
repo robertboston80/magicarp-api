@@ -1,4 +1,12 @@
-1.4.0 (2018-07-XX)
+1.4.1 (2018-07-09)
+~~~~~~~~~~~~~~~~~~
+
+Bug Fixes:
+
+ * Prevent critical error on initalisation of logging with default settings
+
+
+1.4.0 (2018-07-08)
 ~~~~~~~~~~~~~~~~~~
 
 New Features:

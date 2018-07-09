@@ -71,12 +71,11 @@ LOGGING = {
             'datefmt': '%Y-%m-%d %H:%M:%S',
         },
     },
-
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
             'level': 'INFO',
-            'formatter': 'simple',
+            'formatter': 'standard',
         },
     },
     'loggers': {
