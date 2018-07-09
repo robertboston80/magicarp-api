@@ -53,8 +53,8 @@ STORAGE_ENGINES = {
 }
 
 # if you want to integrate leave None if you don't want to use rollbar
-# ROLLBAR_API_KEY = None
-# ROLLBAR_ENV = 'dev'
+ROLLBAR_API_KEY = None
+ROLLBAR_ENV = 'dev'
 
 # logging is handled by standard `python` logging module, hence this
 # dictionary, it is used by logging.config.dictConfig on app start-up,
