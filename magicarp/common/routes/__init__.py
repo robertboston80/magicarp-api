@@ -65,7 +65,7 @@ class FavIcon(endpoint.BaseEndpoint):
     url = '/favicon.ico'
     name = 'favicon'
 
-    response = None
+    envelope = None
 
     def action(self):  # pylint: disable=arguments-differ
         resp = make_response(base64.b64decode(settings.FAVICON_CONTENT))

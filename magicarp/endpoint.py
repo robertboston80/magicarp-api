@@ -1,6 +1,6 @@
 from flask import request
 
-from . import exceptions, response, tools
+from . import exceptions, envelope, tools
 
 
 class BaseEndpoint(object):
@@ -16,8 +16,14 @@ class BaseEndpoint(object):
     # if set, given object will be returned
     output_schema = None
 
-    # which response to use, defaults to (success, 200)
-    response = response.read_response
+    # each response is an envelope that may or may not contain extra data, it's
+    # sort of saying that magicarp kept composure in case of error or error is
+    # totally uncontrolled so that even envelope could not be created, if we
+    # set it to None we will disable it (however flask error will follow,
+    # unless we keep in mind that not only response but http_response_code is
+    # expected by flask), if we set it to envelope.Raw() we will return data
+    # as-is
+    envelope = envelope.Read()
 
     # if set given permission will be checked before attempting to call
     # endpoint
@@ -83,22 +89,22 @@ class BaseEndpoint(object):
         result = self.action(*args, **kwargs)
 
         # if request.headers.get('X-Docs'):
-        #     response = view.__doc__, 200
+        #     result = view.__doc__, 200
         # else:
-        #     response = view(**data)
+        #     result = view(**data)
 
         if self.output_schema:
             # pylint: disable=not-callable
-            expected_response = self.output_schema(
+            expected_output = self.output_schema(
                 self.output_schema.__name__.lower())
             # pylint: enable=not-callable
 
-            expected_response.populate(result)
+            expected_output.populate(result)
 
-            result = expected_response
+            result = expected_output
 
         # this will trick to run callable as function and not method
-        if self.response:
-            return self.response.__func__(result)
+        if self.envelope:
+            return self.envelope(result)
 
         return result

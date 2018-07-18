@@ -6,7 +6,7 @@ from flask.logging import default_handler
 
 from simple_settings import settings
 
-from . import exceptions, tools, response, plugins
+from . import exceptions, tools, envelope, plugins
 
 
 # pylint: disable=too-many-branches
@@ -68,7 +68,7 @@ def _register_error_handlers(app):
         """When we request asset but it's not found, ie. /user/uid/1/ should
         return user but there is no user for uid 1.
         """
-        return response.error_response(err, 404)
+        return envelope.Error(404)(err)
 
     @app.errorhandler(exceptions.EndpointNotImplementedError)
     def handle_missing_implementation(err):  # pylint: disable=unused-variable
@@ -76,7 +76,7 @@ def _register_error_handlers(app):
         """
         app.logger.error(err, exc_info=True)
 
-        return response.error_response(err, 500)
+        return envelope.Error(500)(err)
 
     @app.errorhandler(exceptions.BasePayloadError)
     def handle_malformed_input(err):  # pylint: disable=unused-variable
@@ -85,7 +85,7 @@ def _register_error_handlers(app):
         """
         app.logger.error(err, exc_info=True)
 
-        return response.error_response(err, 400)
+        return envelope.Error(400)(err)
 
     @app.errorhandler(exceptions.BaseValidationError)
     def handle_invalid_input(err):  # pylint: disable=unused-variable
@@ -95,7 +95,7 @@ def _register_error_handlers(app):
         """
         app.logger.error(err, exc_info=True)
 
-        return response.error_response(err, 500)
+        return envelope.Error(500)(err)
 
     @app.errorhandler(exceptions.ResponseError)
     def handle_invalid_response(err):  # pylint: disable=unused-variable
@@ -105,7 +105,7 @@ def _register_error_handlers(app):
         """
         app.logger.error(err, exc_info=True)
 
-        return response.error_response(err, 500)
+        return envelope.Error(500)(err)
 
     @app.errorhandler(Exception)
     def handle_other_magicarp_errors(err):  # pylint: disable=unused-variable
@@ -114,7 +114,7 @@ def _register_error_handlers(app):
         """
         app.logger.error(err, exc_info=True)
 
-        return response.error_response(err, 500)
+        return envelope.Error(500)(err)
 
     @app.errorhandler(Exception)
     def handle_remaining_errors(err):  # pylint: disable=unused-variable
@@ -122,7 +122,7 @@ def _register_error_handlers(app):
         """
         app.logger.error(err, exc_info=True)
 
-        return response.error_response(err, 500)
+        return envelope.Error(500)(err)
 
     # NOTE: add inactive version handling?
     # except exc.InactiveAPIVersion as err:

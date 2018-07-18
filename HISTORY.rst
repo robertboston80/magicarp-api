@@ -1,9 +1,26 @@
+1.5.0 (2018-07-18)
+~~~~~~~~~~~~~~~~~~
+
+New Features:
+
+ * Renamed response to envelope to distinguish it from response as an
+   interaction of webserver, in other words from now on each request,
+   there will be a response in form of envelope that may or may not contain
+   additional payload
+ * Envelopes are classes, in order to make possible to override http_code they
+   return.
+
+Breaking Compatibilty:
+
+ * responses have been changed into envelopes
+
+
 1.4.1 (2018-07-09)
 ~~~~~~~~~~~~~~~~~~
 
 Bug Fixes:
 
- * Prevent critical error on initalisation of logging with default settings
+ * Prevent critical error on initialisation of logging with default settings
 
 
 1.4.0 (2018-07-08)
@@ -85,7 +102,7 @@ New Features:
 
 Bug Fixes:
 
- * Fix input throwing exception if collection was in use on incomming data.
+ * Fix input throwing exception if collection was in use on incoming data.
    (Regression from change for version 1.0.10)
 
 1.0.10 (2018-05-09)

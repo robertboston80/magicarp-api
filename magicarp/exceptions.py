@@ -37,7 +37,7 @@ class BaseDataError(MagicarpApiException):
 
         super().__init__(*args, **kwargs)
 
-    def get_errors_as_dict(self):
+    def get_errors(self):
         """Method returns errors in a format that could be easily consumed by
         other parts of the system.
 
@@ -70,7 +70,7 @@ class BaseDataError(MagicarpApiException):
         return tmp if tmp else str(super().__str__())
 
     def __str__(self):
-        return json.dumps(self.get_errors_as_dict())
+        return json.dumps(self.get_errors())
 
 
 class BasePayloadError(BaseDataError):
@@ -109,7 +109,7 @@ class MultipleValidationError(BaseValidationError):
 
         super().__init__(*args, **kwargs)
 
-    def get_errors_as_dict(self):
+    def get_errors(self):
         """Method returns errors in a format that could be easily consumed by
         other parts of the system.
 
@@ -154,4 +154,4 @@ class MultipleValidationError(BaseValidationError):
         return tmp
 
     def __str__(self):
-        return json.dumps(self.get_errors_as_dict())
+        return json.dumps(self.get_errors())
