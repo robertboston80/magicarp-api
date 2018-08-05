@@ -1,3 +1,4 @@
+import copy
 import collections
 
 from magicarp import exceptions, tools
@@ -265,3 +266,88 @@ class BaseIntegerField(BaseField):
         except (TypeError, ValueError):
             raise exceptions.InvalidPayloadError(
                 "Unable convert value to integer, got: {}".format(value))
+
+
+class BaseDocumentField(BaseSchemaField):
+    fields = (
+        BaseStringField(
+            "key", description="Any string like object"
+        ),
+        BaseStringField(
+            "value", description="Any string like object"
+        ),
+    )
+
+    def confirm_argument_is_of_expected_shape(self, value):
+        super().confirm_argument_is_of_expected_shape(value)
+
+        if not self.fields or len(self.fields) > 2:
+            raise exceptions.InvalidPayloadError(
+                "Invalid DocumentField definition, attribute fields is "
+                "either empty or has more elements than two. "
+                "Not sure how I should proceed.")
+
+        if value is None:
+            return
+
+        if not isinstance(value, (dict, tuple, list)):
+            raise exceptions.InvalidPayloadError(
+                "DocuemntField can be populated only with dictinaries or "
+                "lists/tuples each containing two elements "
+                "got: {}".format(value))
+
+    def as_dictionary(self, user=None):
+        if not self.is_set():
+            return None
+
+        tmp = {}
+
+        for field_key, field_value in self.data.items():
+            tmp[field_key.as_dictionary(user=user)] = \
+                field_value.as_dictionary(user=user)
+
+        return tmp
+
+    def normalise(self, value):
+        # TODO: support dict-like structures
+        if isinstance(value, dict):
+            return value.items()
+
+        return [(elm[0], elm[1]) for elm in value]
+
+    def populate(self, value):
+        self.confirm_argument_is_of_expected_shape(value)
+
+        error_invalid_payload = []
+
+        local_data = {}
+
+        payload = self.normalise(copy.deepcopy(value))
+
+        schema_key = self.fields[0]
+        schema_value = self.fields[1]
+
+        for value_key, value_value in payload:
+            local_schema_key = schema_key.make_new(self)
+            local_schema_value = schema_value.make_new(self)
+
+            try:
+                local_schema_value.populate(value_value)
+            except exceptions.InvalidPayloadError as err:
+                error_invalid_payload.append(
+                    (local_schema_value.name, str(err)))
+
+            try:
+                local_schema_key.populate(value_key)
+            except exceptions.InvalidPayloadError as err:
+                error_invalid_payload.append(
+                    (local_schema_value.name, str(err)))
+
+            local_data[local_schema_key] = local_schema_value
+
+        if error_invalid_payload:
+            raise exceptions.PayloadError(
+                error_invalid_payload=error_invalid_payload
+            )
+
+        self.data = local_data

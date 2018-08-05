@@ -225,3 +225,7 @@ class BoolField(base.BaseBoolField, BaseInputField):
 
 class CollectionField(base.BaseCollectionField, BaseInputField):
     pass
+
+
+class DocumentField(BaseInputField):
+    pass

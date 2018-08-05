@@ -1,6 +1,6 @@
 from magicarp import router, endpoint
 
-from magicarp.common import logic, accept, response
+from magicarp.common import logic, accept, output_schema
 
 
 class AuthenticateUser(endpoint.BaseEndpoint):
@@ -12,7 +12,7 @@ class AuthenticateUser(endpoint.BaseEndpoint):
     methods = ["POST"]
 
     input_schema = accept.LoginPassword
-    output_schema = response.Credentials
+    output_schema = output_schema.Credentials
 
     argument_name = 'payload'
 
