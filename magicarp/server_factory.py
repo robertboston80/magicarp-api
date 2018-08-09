@@ -218,7 +218,8 @@ def _register_routes(app):
 
         common_blueprints.append(routes.blueprint)
 
-    routing.register_version(None, common_blueprints)
+    if common_blueprints:
+        routing.register_version(None, common_blueprints)
 
     # from now on every attempt to register or de-register version will cause
     # exception
