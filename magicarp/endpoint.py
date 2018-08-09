@@ -89,14 +89,14 @@ class BaseEndpoint(object):
 
         return expected_output
 
-    def get_payload(self, request_):
-        if request_.headers.get('Content-Type') == 'application/json':
-            return request.get_json()
+    def get_payload(self):
+        if self.request.headers.get('Content-Type') == 'application/json':
+            return self.request.get_json()
 
-        return tools.helpers.to_json(request_.values)
+        return tools.helpers.to_json(self.request.values)
 
     def __call__(self, *args, **kwargs):
-        payload = self.get_payload(request)
+        payload = self.get_payload()
 
         if self.input_schema:
             kwargs.update(self.parse_input(payload))
