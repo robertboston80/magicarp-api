@@ -55,9 +55,6 @@ class BaseEndpoint(object):
 
         return "[Docstring not set nor attribute long_description]"
 
-    def parse_output(self, resp):
-        return resp
-
     def action(self, *args, **kwargs):
         raise exceptions.EndpointNotImplementedError(
             "Endpoint do not implement action")
@@ -66,42 +63,53 @@ class BaseEndpoint(object):
     def request(self):
         return request
 
+    def parse_input(self, payload):
+        # pylint: disable=not-callable
+        accepted_instance = self.input_schema(
+            self.input_schema.__name__.lower())
+        # pylint: enable=not-callable
+
+        accepted_instance.populate(payload)
+
+        # if invalidated throw exception that will be automatically handled
+        # by framework
+        accepted_instance.validate()
+
+        return {
+            self.argument_name: accepted_instance,
+        }
+
+    def parse_output(self, result):
+        # pylint: disable=not-callable
+        expected_output = self.output_schema(
+            self.output_schema.__name__.lower())
+        # pylint: enable=not-callable
+
+        expected_output.populate(result)
+
+        return expected_output
+
+    def get_payload(self, request_):
+        if request_.headers.get('Content-Type') == 'application/json':
+            return request.get_json()
+
+        return tools.helpers.to_json(request_.values)
+
     def __call__(self, *args, **kwargs):
-        if request.headers.get('Content-Type') == 'application/json':
-            payload = request.get_json()
-        else:
-            payload = tools.helpers.to_json(request.values)
+        payload = self.get_payload(request)
 
         if self.input_schema:
-            # pylint: disable=not-callable
-            accepted_instance = self.input_schema(
-                self.input_schema.__name__.lower())
-            # pylint: enable=not-callable
-
-            accepted_instance.populate(payload)
-
-            # if invalidated throw exception that will be automatically handled
-            # by framework
-            accepted_instance.validate()
-
-            kwargs[self.argument_name] = accepted_instance
+            kwargs.update(self.parse_input(payload))
 
         result = self.action(*args, **kwargs)
 
         # if request.headers.get('X-Docs'):
         #     result = view.__doc__, 200
         # else:
-        #     result = view(**data)
+        #     result = self.action(*args, **kwargs)
 
         if self.output_schema:
-            # pylint: disable=not-callable
-            expected_output = self.output_schema(
-                self.output_schema.__name__.lower())
-            # pylint: enable=not-callable
-
-            expected_output.populate(result)
-
-            result = expected_output
+            result = self.parse_output(result)
 
         # this will trick to run callable as function and not method
         if self.envelope:
