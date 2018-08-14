@@ -95,8 +95,22 @@ class BaseEndpoint(object):
 
         return tools.helpers.to_json(self.request.values)
 
+    def pre_action(self, payload):
+        """Override if you want to manipulate payload before it goes to
+        input_schema parsing
+        """
+        return payload
+
+    def post_action(self, result):
+        """Override if you want to manipulate result before it goes to
+        the user
+        """
+        return result
+
     def __call__(self, *args, **kwargs):
         payload = self.get_payload()
+
+        payload = self.pre_action(payload)
 
         if self.input_schema:
             kwargs.update(self.parse_input(payload))
@@ -113,6 +127,8 @@ class BaseEndpoint(object):
 
         # this will trick to run callable as function and not method
         if self.envelope:
-            return self.envelope(result)
+            result = self.envelope(result)
+
+        result = self.post_action(result)
 
         return result
