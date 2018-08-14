@@ -13,6 +13,7 @@ New Features:
    allows to manipulate result before it's being send to the end user, typical
    use case is optional header that alters how endpoint works (ie.
    authentication) or adding custom headers to the response
+ * Auth models have new method is_authorised that return true/false
 
 Bug Fixes:
 
