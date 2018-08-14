@@ -71,3 +71,7 @@ class BoolField(base.BaseBoolField, BaseOutputField):
 
 class CollectionField(base.BaseCollectionField, BaseOutputField):
     pass
+
+
+class DocumentField(base.BaseDocumentField, BaseOutputField):
+    pass

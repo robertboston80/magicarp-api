@@ -14,7 +14,7 @@ class TestOutputSchema(base.BaseTest):
             "url": 'http://www.example.com',
 
         }
-        schema = common.response.ResourceCreated('resource_created')
+        schema = common.output_schema.ResourceCreated('resource_created')
 
         schema.populate(payload)
 
@@ -30,7 +30,7 @@ class TestOutputSchema(base.BaseTest):
             "url": 'http://www.example.com',
 
         }
-        schema = common.response.ResourceUpdated('resource_updated')
+        schema = common.output_schema.ResourceUpdated('resource_updated')
 
         schema.populate(payload)
 
@@ -44,7 +44,7 @@ class TestOutputSchema(base.BaseTest):
             'apple', 2, 'banana', 3, 'orange', 8,
         ]
 
-        schema = common.response.ListResponse('list_response')
+        schema = common.output_schema.ListResponse('list_response')
 
         schema.populate(payload)
 

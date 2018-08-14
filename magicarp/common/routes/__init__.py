@@ -6,7 +6,7 @@ from simple_settings import settings
 
 from magicarp import router, endpoint, signals
 
-from magicarp.common import logic
+from magicarp.common import logic, output_schema
 
 
 class Ping(endpoint.BaseEndpoint):
@@ -28,6 +28,8 @@ class UrlMap(endpoint.BaseEndpoint):
     """
     url = '/'
     name = 'url_map'
+
+    output_schema = output_schema.Map
 
     def action(self):  # pylint: disable=arguments-differ
         func_list = logic.get_url_map(request.version)

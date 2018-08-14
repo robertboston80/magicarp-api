@@ -61,3 +61,14 @@ class Credentials(field.SchemaField):
             "expires_in",
             description="How much time till it has to be renewed"),
     )
+
+
+class Map(field.DocumentField):
+    fields = (
+        field.StringField(
+            "key", description="KEY"
+        ),
+        field.StringField(
+            "value", description="VALUE"
+        ),
+    )

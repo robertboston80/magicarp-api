@@ -3,6 +3,22 @@
 
 New Features:
 
+ * New field `DocumentField`, behaves like a Mongo-like document, any key and
+   any value will do, as long as they can be json serialised. If not one has to
+   override standard definition of framework. Helps if response is document
+   without fixed structure. Previously developer was forced to use
+   [output/input]-schema-less endpoint.
+
+Breaking Compatibilty:
+
+ * default map endpoint started to use new schema Map (behaves the same) 
+
+
+1.5.0 (2018-07-18)
+~~~~~~~~~~~~~~~~~~
+
+New Features:
+
  * Renamed response to envelope to distinguish it from response as an
    interaction of webserver, in other words from now on each request,
    there will be a response in form of envelope that may or may not contain
