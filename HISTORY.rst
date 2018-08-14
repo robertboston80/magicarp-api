@@ -8,6 +8,16 @@ New Features:
    already a mechanism to define how to serialise complex objects). Helps if
    response is document without fixed structure. Previously developer was
    forced to use raw response and had no support of framework with validation.
+ * New methods to override on endpoints pre_action and post_action, pre_action
+   allows to manipulate payload before it hits input parsing, post_action
+   allows to manipulate result before it's being send to the end user, typical
+   use case is optional header that alters how endpoint works (ie.
+   authentication) or adding custom headers to the response
+
+Bug Fixes:
+
+ * When ROUTING_ADD_COMMON and ROUTING_ADD_AUTH was False, bug prevented
+   registering any other version-less endpoint
 
 Breaking Compatibility:
 
