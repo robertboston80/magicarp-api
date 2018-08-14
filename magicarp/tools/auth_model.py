@@ -12,6 +12,9 @@ class AbstractUser(object):
     def has_permission(self, view_func):
         return False
 
+    def is_authorised(self):
+        return False
+
 
 class UnauthorizedUser(AbstractUser):
     def __init__(self):
@@ -37,9 +40,15 @@ class AuthorizedUser(AbstractUser):
 
         return True
 
+    def is_authorised(self):
+        return True
+
 
 class AuthorizedTestUser(AuthorizedUser):
     def __init__(self):
         super().__init__(
             '42', 'TestUserName', 'test.user.name@example.com',
             settings.DEFAULT_LANGUAGE_CODE, settings.DATE_TIMEZONE)
+
+    def is_authorised(self):
+        return True
