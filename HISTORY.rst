@@ -15,6 +15,17 @@ New Features:
    authentication) or adding custom headers to the response
  * Auth models have new method is_authorised that return true/false
 
+Deleted Features:
+
+ * Auth and storage was removed from framework. As many projects out there, as
+   many methods of authenticating. Magicarp mission is help with problems that
+   are more or less always solved one way, not to have myriad of settings
+   options, that each of them almost work but not really for this typical use
+   case. Current go-to solution is providing `register_auth` function to
+   create_app and providing endpoint that will work with it. For that reason
+   redis and dummy storage was removed as not every app will require
+   persistence and it was introduced to handle user authentication.
+
 Bug Fixes:
 
  * When ROUTING_ADD_COMMON and ROUTING_ADD_AUTH was False, bug prevented

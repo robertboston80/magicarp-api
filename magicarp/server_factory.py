@@ -14,7 +14,7 @@ def create_app(
         first_setup=None, setup=None, register_error_handlers=None,
         register_loggers=None, before_routes=None, final_setup=None,
         register_extra_error_handlers=None, register_auth=None,
-        register_routes=None, get_user_from_request=None):
+        register_routes=None):
     app = flask.Flask(settings.APP_NAME)
 
     app.config.from_object('magicarp.settings.flask_defaults')
@@ -37,7 +37,7 @@ def create_app(
     if register_auth:
         register_auth(app, flask.request)
     else:
-        _register_auth(app, get_user_from_request)
+        _register_auth(app)
 
     if register_error_handlers:
         register_error_handlers(app)
@@ -153,18 +153,12 @@ def _register_loggers(app):
                 logger.addHandler(handler)
 
 
-def _register_auth(app, get_user_from_request):
-    """Example how auth of user works, this one works with built-in auth
-    namespace, override it to whatever auth endpoint is being used
-    """
-    if get_user_from_request is None:
-        from magicarp.common import logic
-
-        get_user_from_request = logic.retrieve_user_from_request
-
+def _register_auth(app):
+    """On default application will attach unauthorised user. Override function
+    if you want anything smarter than that"""
     @app.before_request
     def user_auth():  # pylint: disable=unused-variable
-        flask.request.user = get_user_from_request(flask.request)
+        flask.request.user = tools.auth_model.UnauthorizedUser()
 
 
 def _setup(app):
@@ -207,11 +201,6 @@ def _register_routes(app):
     from magicarp import routing
 
     common_blueprints = []
-
-    if settings.ROUTING_ADD_AUTH:
-        from magicarp.common.routes import auth_route
-
-        common_blueprints.append(auth_route.blueprint)
 
     if settings.ROUTING_ADD_COMMON:
         from magicarp.common import routes

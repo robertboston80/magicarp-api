@@ -8,7 +8,6 @@ from . import tools  # NOQA
 from . import schema  # NOQA
 from . import envelope  # NOQA
 from . import endpoint  # NOQA
-from . import storage  # NOQA
 
 from . import server_factory  # NOQA
 

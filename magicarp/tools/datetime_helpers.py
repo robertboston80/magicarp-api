@@ -21,7 +21,7 @@ def get_current_server_time():
     """
     date_obj = get_current_utc_time()
 
-    return add_timezone(date_obj, settings.DATE_TIMEZONE)
+    return add_timezone(date_obj, settings.DEFAULT_TIMEZONE)
 
 
 def add_timezone(date_obj, timezone):
@@ -48,7 +48,7 @@ def parse_into_datetime(value):
 
     if date_obj.tzinfo is None:
         date_obj = add_timezone(
-            date_obj.replace(tzinfo=pytz.utc), settings.DATE_TIMEZONE)
+            date_obj.replace(tzinfo=pytz.utc), settings.DEFAULT_TIMEZONE)
 
     return date_obj
 

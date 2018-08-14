@@ -18,39 +18,13 @@ FLASK_ENV = 'development'
 SECRET_KEY = None
 
 ROUTING_ADD_COMMON = True
-ROUTING_ADD_AUTH = True
-
-TEST_USER_ENABLED = False
-TEST_USER = None
 
 # if you have one backend for multiple api's, change namespace to avoid user
 # session collision
 SESSION_NAMESPACE = 'magicarp'
 
 DEFAULT_LANGUAGE_CODE = 'en_GB'
-DATE_TIMEZONE = 'UTC'
-
-CACHE_ENGINE = 'dummy'
-
-
-def get_redis_engine():
-    from magicarp.storage import redis_engine
-
-    return redis_engine
-
-
-def get_dummy_engine():
-    from magicarp.storage import dummy_engine
-
-    return dummy_engine
-
-
-STORAGE_SETTINGS = {}
-STORAGE_ENGINE = 'dummy'
-STORAGE_ENGINES = {
-    'redis': get_redis_engine,
-    'dummy': get_dummy_engine,
-}
+DEFAULT_TIMEZONE = 'UTC'
 
 # if you want to integrate leave None if you don't want to use rollbar
 ROLLBAR_API_KEY = None

@@ -9,7 +9,7 @@ class AbstractUser(object):
         self.language_code = language_code
         self.timezone = timezone
 
-    def has_permission(self, view_func):
+    def has_permission(self, endpoint):
         return False
 
     def is_authorised(self):
@@ -20,7 +20,7 @@ class UnauthorizedUser(AbstractUser):
     def __init__(self):
         super().__init__(
             '0', 'Unauthorized', 'unauthorized@example.com',
-            settings.DEFAULT_LANGUAGE_CODE, settings.DATE_TIMEZONE)
+            settings.DEFAULT_LANGUAGE_CODE, settings.DEFAULT_TIMEZONE)
 
 
 class AuthorizedUser(AbstractUser):
@@ -29,12 +29,12 @@ class AuthorizedUser(AbstractUser):
             language_code = settings.DEFAULT_LANGUAGE_CODE
 
         if timezone is None:
-            timezone = settings.DATE_TIMEZONE
+            timezone = settings.DEFAULT_TIMEZONE
 
         super().__init__(
             uid, name, email, language_code, timezone)
 
-    def has_permission(self, view_func):
+    def has_permission(self, endpoint):
         # NOTE: entry point to limit endpoints per user, if it's that something
         # that you want to have on api
 
@@ -47,8 +47,8 @@ class AuthorizedUser(AbstractUser):
 class AuthorizedTestUser(AuthorizedUser):
     def __init__(self):
         super().__init__(
-            '42', 'TestUserName', 'test.user.name@example.com',
-            settings.DEFAULT_LANGUAGE_CODE, settings.DATE_TIMEZONE)
+            '42', 'TestUserName', 'test.user@example.com',
+            settings.DEFAULT_LANGUAGE_CODE, settings.DEFAULT_TIMEZONE)
 
     def is_authorised(self):
         return True
