@@ -1,17 +1,17 @@
-1.5.0 (2018-07-18)
+1.6.0 (2018-08-XX)
 ~~~~~~~~~~~~~~~~~~
 
 New Features:
 
  * New field `DocumentField`, behaves like a Mongo-like document, any key and
-   any value will do, as long as they can be json serialised. If not one has to
-   override standard definition of framework. Helps if response is document
-   without fixed structure. Previously developer was forced to use
-   [output/input]-schema-less endpoint.
+   any value will do, as long as they can be json serialised. (Note: there is
+   already a mechanism to define how to serialise complex objects). Helps if
+   response is document without fixed structure. Previously developer was
+   forced to use raw response and had no support of framework with validation.
 
-Breaking Compatibilty:
+Breaking Compatibility:
 
- * default map endpoint started to use new schema Map (behaves the same) 
+ * default map endpoint started to use new schema Map (behaves the same)
 
 
 1.5.0 (2018-07-18)
@@ -26,7 +26,7 @@ New Features:
  * Envelopes are classes, in order to make possible to override http_code they
    return.
 
-Breaking Compatibilty:
+Breaking Compatibility:
 
  * responses have been changed into envelopes
 
