@@ -61,7 +61,7 @@ class Blueprint(FlaskBlueprint):
     def add_route(self, route):
         if route.name in self.routes:
             raise exceptions.DuplicateRouteException(
-                "Given route {} is already set on Blueprint".format(
+                "Two or more endpoints exist with same route name: {} ".format(
                     route.name))
 
         self.routes[route.name] = route

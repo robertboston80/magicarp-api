@@ -12,6 +12,13 @@ class RoutingConfigurationError(MagicarpApiException):
     pass
 
 
+class DuplicateRouteException(MagicarpApiException):
+    """Exception happens when attemt to register endpoint fails. As such is
+    never to be visible for a flask application.
+    """
+    pass
+
+
 class EndpointNotImplementedError(MagicarpApiException):
     """When endpoint was defined but is missing action method (that actually
     does things)
