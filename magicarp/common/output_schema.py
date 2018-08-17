@@ -49,20 +49,6 @@ class ListResponse(field.CollectionField):
             "Reply from server that replies with any kind of collection.")
 
 
-class Credentials(field.SchemaField):
-    fields = (
-        field.StringField(
-            "message", description="Descriptive message of what has happened"),
-        field.StringField(
-            "access_token", description="Generated access token"),
-        field.StringField(
-            "token_type", description="What type of token is it"),
-        field.IntegerField(
-            "expires_in",
-            description="How much time till it has to be renewed"),
-    )
-
-
 class Map(field.DocumentField):
     fields = (
         field.StringField(
