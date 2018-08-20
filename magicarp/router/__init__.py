@@ -222,11 +222,12 @@ class Router(object):
     def get_normalised_blueprints(self):
         """Rules:
 
-         - versionless blueprints are always attached, but can be overriden or
-            excluded
+         - version-less blueprints are always attached, but can be overridden
+           or excluded
          - blueprints from previous versions are joined only if there is
            matching namespace and non-matching name of the endpoint
-         - versionless blueprints never override anything, but can be overriden
+         - version-less blueprints never override anything, but can be
+           overridden
         """
         versionless_blueprints = \
             self.versions.pop(None) if None in self.versions else []
