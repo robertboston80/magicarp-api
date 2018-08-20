@@ -1,6 +1,3 @@
-import os
-import logging
-
 from . import favicon
 
 FAVICON_CONTENT = favicon.__doc__
@@ -18,6 +15,7 @@ FLASK_ENV = 'development'
 SECRET_KEY = None
 
 ROUTING_ADD_COMMON = True
+ROUTING_ADD_SHUTDOWN_ROUTE = False
 
 # if you have one backend for multiple api's, change namespace to avoid user
 # session collision
@@ -70,7 +68,7 @@ LOGGING = {
 # LOGGING_ADDITIONAL_HANDLERS = [lambda: SMTPHandler()]
 LOGGING_ADDITIONAL_HANDLERS = ()
 
-# if you want to attach extra handlers defined in LOGGING_ADDITIONAL_HANDLERS, 
+# if you want to attach extra handlers defined in LOGGING_ADDITIONAL_HANDLERS,
 # override LOGGING_ADDITIONAL_LOGGERS with list of strings, where each of them
 # defines logger that should have handler added, ie. sqlalchemy, note:
 # 'app.logger' is standard flask logger that will defined after

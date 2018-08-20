@@ -1,5 +1,4 @@
 import base64
-import os
 
 from flask import request, current_app, make_response
 from simple_settings import settings
@@ -78,14 +77,11 @@ class FavIcon(endpoint.BaseEndpoint):
 
 
 routes = [
-    Ping(),
-    UrlMap(),
-    FavIcon(),
+    Ping,
+    UrlMap,
+    FavIcon,
 ]
 
-
-if os.environ.get("FLASK_ENV") == 'development':
-    routes.append(ShutDown())
 
 blueprint = router.Blueprint(
     __name__, namespace="/", routes=routes)

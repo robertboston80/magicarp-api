@@ -44,6 +44,10 @@ Bug Fixes:
 Breaking Compatibility:
 
  * default map endpoint started to use new schema Map (behaves the same)
+ * add ROUTING_ADD_SHUTDOWN_ROUTE as an explicit way to add endpoint that
+   allows remotely to shtudown a server, helpful if we want to stop server
+   execution programatically via test runners or bots, it's niche requirements
+   and potentially dangerous and thus should be on default False
 
 
 1.5.0 (2018-07-18)

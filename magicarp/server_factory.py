@@ -211,6 +211,9 @@ def _register_routes(app):
     if settings.ROUTING_ADD_COMMON:
         from magicarp.common import routes
 
+        if settings.ROUTING_ADD_SHUTDOWN_ROUTE:
+            routes.blueprint.add_route(routes.ShutDown)
+
         common_blueprints.append(routes.blueprint)
 
     if common_blueprints:
