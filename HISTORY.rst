@@ -9,11 +9,13 @@ New Features:
    response is document without fixed structure. Previously developer was
    forced to use raw response and had no support of framework with validation.
  * New methods to override on endpoints pre_action and post_action, pre_action
-   allows to manipulate payload before it hits input parsing, post_action
+   allows to manipulate endpoint before anything happens, post_action
    allows to manipulate result before it's being send to the end user, typical
    use case is optional header that alters how endpoint works (ie.
    authentication) or adding custom headers to the response
  * Auth models have new method is_authorised that return true/false
+ * New exception AccessForbiden and default handling of it, simplest use case
+   is to import it in your project and raise, to do http status code 403
 
 Deleted Features:
 
@@ -25,11 +27,19 @@ Deleted Features:
    create_app and providing endpoint that will work with it. For that reason
    redis and dummy storage was removed as not every app will require
    persistence and it was introduced to handle user authentication.
+ * As Auth ceased to exist so did AuthorizedTestUser, feature that can be
+   implemented number of ways and is like auth dependent on developers taste
+   and need
+ * Due to auth no longer being part of magicarp, setting ROUTING_ADD_AUTH was
+   dropped
 
 Bug Fixes:
 
  * When ROUTING_ADD_COMMON and ROUTING_ADD_AUTH was False, bug prevented
    registering any other version-less endpoint
+ * When attempting to register second endpoint with same name as the first one,
+   magicarp was attempting to raise exception DuplicateRouteException, this
+   exception was reimplemented + clarified a bit text message
 
 Breaking Compatibility:
 
