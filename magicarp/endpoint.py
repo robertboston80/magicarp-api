@@ -95,11 +95,11 @@ class BaseEndpoint(object):
 
         return tools.helpers.to_json(self.request.values)
 
-    def pre_action(self, payload):
+    def pre_action(self):
         """Override if you want to manipulate payload before it goes to
         input_schema parsing
         """
-        return payload
+        return
 
     def post_action(self, result):
         """Override if you want to manipulate result before it goes to
@@ -108,9 +108,9 @@ class BaseEndpoint(object):
         return result
 
     def __call__(self, *args, **kwargs):
-        payload = self.get_payload()
+        self.pre_action()
 
-        payload = self.pre_action(payload)
+        payload = self.get_payload()
 
         if self.input_schema:
             kwargs.update(self.parse_input(payload))
