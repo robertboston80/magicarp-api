@@ -2,7 +2,7 @@ import collections
 
 from flask import Blueprint as FlaskBlueprint
 
-from magicarp import exceptions
+from magicarp import exceptions, endpoint
 
 
 class Blueprint(FlaskBlueprint):
@@ -59,6 +59,9 @@ class Blueprint(FlaskBlueprint):
         return self
 
     def add_route(self, route):
+        if not isinstance(route, endpoint.BaseEndpoint):
+            route = route()
+
         if route.name in self.routes:
             raise exceptions.DuplicateRouteException(
                 "Two or more endpoints exist with same route name: {} ".format(

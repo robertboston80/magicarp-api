@@ -40,6 +40,9 @@ Bug Fixes:
  * When attempting to register second endpoint with same name as the first one,
    magicarp was attempting to raise exception DuplicateRouteException, this
    exception was reimplemented + clarified a bit text message
+ * endpoint that was added to blueprint not as an instance was incorrectly
+   displaying help (taken on default from docstring), instantiate all endpoints
+   that were added as a classes to blueprint
 
 Breaking Compatibility:
 
