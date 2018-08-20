@@ -42,13 +42,3 @@ class AuthorizedUser(AbstractUser):
 
     def is_authorised(self):
         return True
-
-
-class AuthorizedTestUser(AuthorizedUser):
-    def __init__(self):
-        super().__init__(
-            '42', 'TestUserName', 'test.user@example.com',
-            settings.DEFAULT_LANGUAGE_CODE, settings.DEFAULT_TIMEZONE)
-
-    def is_authorised(self):
-        return True
