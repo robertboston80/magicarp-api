@@ -32,6 +32,10 @@ class NotFoundError(MagicarpApiException):
     pass
 
 
+class AccessForbidden(MagicarpApiException):
+    pass
+
+
 class BaseDataError(MagicarpApiException):
     """Exception is able to aggregate any number of errors and then display
     them as a dictionary of problems.

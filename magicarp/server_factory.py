@@ -97,6 +97,12 @@ def _register_error_handlers(app):
 
         return envelope.Error(500)(err)
 
+    @app.errorhandler(exceptions.AccessForbidden)
+    def access_forbidden(err):  # pylint: disable=unused-variable
+        app.logger.info(err, exc_info=True)
+
+        return envelope.Error(403)("Access forbidden")
+
     @app.errorhandler(exceptions.ResponseError)
     def handle_invalid_response(err):  # pylint: disable=unused-variable
         """When application handled incomming data, but according to definition
