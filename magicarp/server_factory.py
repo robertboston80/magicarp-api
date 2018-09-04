@@ -95,7 +95,7 @@ def _register_error_handlers(app):
         """
         app.logger.error(err, exc_info=True)
 
-        return envelope.Error(500)(err)
+        return envelope.Error(400)(err)
 
     @app.errorhandler(exceptions.AccessForbidden)
     def access_forbidden(err):  # pylint: disable=unused-variable
